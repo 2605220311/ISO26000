@@ -6,7 +6,6 @@
 <title>동아쏘시오그룹 인권경영 진단</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -17,94 +16,141 @@
 <body>
 <div id="root"></div>
 
-<script type="text/babel" data-presets="react">
-
+<script>
 /* ---------------- 아이콘 (lucide 대체용 간단 SVG) ---------------- */
-function Icon({ size = 16, className = '', children }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      {children}
-    </svg>
-  );
+function Icon({
+  size = 16,
+  className = '',
+  children
+}) {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: className
+  }, children);
 }
 function ClipboardCheck(props) {
-  return (
-    <Icon {...props}>
-      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-      <path d="m9 14 2 2 4-4" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("rect", {
+    x: "8",
+    y: "2",
+    width: "8",
+    height: "4",
+    rx: "1",
+    ry: "1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m9 14 2 2 4-4"
+  }));
 }
 function BarChart3(props) {
-  return (
-    <Icon {...props}>
-      <path d="M3 3v18h18" />
-      <path d="M18 17V9" />
-      <path d="M13 17V5" />
-      <path d="M8 17v-3" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("path", {
+    d: "M3 3v18h18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M18 17V9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M13 17V5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 17v-3"
+  }));
 }
-function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
-function ChevronRight(props) { return <Icon {...props}><polyline points="9 18 15 12 9 6" /></Icon>; }
-function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
+function ChevronLeft(props) {
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("polyline", {
+    points: "15 18 9 12 15 6"
+  }));
+}
+function ChevronRight(props) {
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("polyline", {
+    points: "9 18 15 12 9 6"
+  }));
+}
+function ChevronDown(props) {
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("polyline", {
+    points: "6 9 12 15 18 9"
+  }));
+}
 function Download(props) {
-  return (
-    <Icon {...props}>
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("path", {
+    d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "7 10 12 15 17 10"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "15",
+    x2: "12",
+    y2: "3"
+  }));
 }
 function Search(props) {
-  return (
-    <Icon {...props}>
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("circle", {
+    cx: "11",
+    cy: "11",
+    r: "8"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "21",
+    y1: "21",
+    x2: "16.65",
+    y2: "16.65"
+  }));
 }
 function AlertTriangle(props) {
-  return (
-    <Icon {...props}>
-      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-      <line x1="12" y1="9" x2="12" y2="13" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("path", {
+    d: "M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "9",
+    x2: "12",
+    y2: "13"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "17",
+    x2: "12.01",
+    y2: "17"
+  }));
 }
 function RefreshCw(props) {
-  return (
-    <Icon {...props}>
-      <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-      <path d="M21 3v5h-5" />
-      <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-      <path d="M8 16H3v5" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("path", {
+    d: "M3 12a9 9 0 0 1 15-6.7L21 8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M21 3v5h-5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M21 12a9 9 0 0 1-15 6.7L3 16"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 16H3v5"
+  }));
 }
 function ArrowRight(props) {
-  return (
-    <Icon {...props}>
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("line", {
+    x1: "5",
+    y1: "12",
+    x2: "19",
+    y2: "12"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "12 5 19 12 12 19"
+  }));
 }
 function Save(props) {
-  return (
-    <Icon {...props}>
-      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-      <polyline points="17 21 17 13 7 13 7 21" />
-      <polyline points="7 3 7 8 15 8" />
-    </Icon>
-  );
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("path", {
+    d: "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "17 21 17 13 7 13 7 21"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "7 3 7 8 15 8"
+  }));
 }
-
-const { useState, useEffect, useMemo, useCallback, useRef } = React;
+const {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef
+} = React;
 
 // Supabase 접속 정보 (URL/키는 공개용 값이라 코드에 직접 넣어도 안전합니다)
 const SUPABASE_URL = 'https://xolhocotldtienifaikq.supabase.co';
@@ -114,12 +160,20 @@ const SUPABASE_KEY = 'sb_publishable_iXFv0NA8GlT82jBXwUnp1w_PetKN5QC';
 // CDN 라이브러리 로딩 문제를 완전히 피하기 위한 방식입니다.
 async function sbSelectAll(table) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
   });
-  if (!res.ok) return { data: null, error: await res.text() };
-  return { data: await res.json(), error: null };
+  if (!res.ok) return {
+    data: null,
+    error: await res.text()
+  };
+  return {
+    data: await res.json(),
+    error: null
+  };
 }
-
 async function sbUpsert(table, row, onConflictCols) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?on_conflict=${onConflictCols}`, {
     method: 'POST',
@@ -127,34 +181,53 @@ async function sbUpsert(table, row, onConflictCols) {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
       'Content-Type': 'application/json',
-      Prefer: 'resolution=merge-duplicates,return=minimal',
+      Prefer: 'resolution=merge-duplicates,return=minimal'
     },
-    body: JSON.stringify(row),
+    body: JSON.stringify(row)
   });
-  if (!res.ok) return { error: await res.text() };
-  return { error: null };
+  if (!res.ok) return {
+    error: await res.text()
+  };
+  return {
+    error: null
+  };
 }
 
 /* ================================================================ */
 /* constants                                                         */
 /* ================================================================ */
 
-const DEFAULT_COMPANIES = [
-  '동아쏘시오홀딩스', '동아제약', '비티젠', '동아오츠카', '용마로지스',
-  '동아에코팩', '한국신동공업', '아벤종합건설', '디에이아이',
-].map((name, i) => ({ id: `c${i + 1}`, name }));
-
+const DEFAULT_COMPANIES = ['동아쏘시오홀딩스', '동아제약', '비티젠', '동아오츠카', '용마로지스', '동아에코팩', '한국신동공업', '아벤종합건설', '디에이아이'].map((name, i) => ({
+  id: `c${i + 1}`,
+  name
+}));
 const CATEGORY_ORDER = ['프로세스', '진단'];
-const CATEGORY_COLORS = [
-  { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
-  { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
-  { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
-  { bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200' },
-  { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
-];
-
-const catLabel = (c) => c || '미분류';
+const CATEGORY_COLORS = [{
+  bg: 'bg-indigo-50',
+  text: 'text-indigo-700',
+  border: 'border-indigo-200'
+}, {
+  bg: 'bg-emerald-50',
+  text: 'text-emerald-700',
+  border: 'border-emerald-200'
+}, {
+  bg: 'bg-amber-50',
+  text: 'text-amber-700',
+  border: 'border-amber-200'
+}, {
+  bg: 'bg-rose-50',
+  text: 'text-rose-700',
+  border: 'border-rose-200'
+}, {
+  bg: 'bg-cyan-50',
+  text: 'text-cyan-700',
+  border: 'border-cyan-200'
+}, {
+  bg: 'bg-violet-50',
+  text: 'text-violet-700',
+  border: 'border-violet-200'
+}];
+const catLabel = c => c || '미분류';
 function categoryColor(category) {
   let sum = 0;
   const str = catLabel(category);
@@ -171,38 +244,57 @@ function mergeKey(no, cat) {
 
 /* 공식 채점 기준 (사용자 제공 채점표 기준)                              */
 // 프로세스 영역: 8단계, 문항 1~36 구간, 보기 위치별 고정 배점(A~E)
-const PROCESS_STAGES = [
-  { name: '사회적 책임 인식', range: [1, 5] },
-  { name: '이해관계자 식별과 참여', range: [6, 11] },
-  { name: '핵심 주제와 쟁점 분석', range: [12, 14] },
-  { name: '우선순위 설정 및 실행전략, 계획 수립', range: [15, 20] },
-  { name: '실행', range: [21, 24] },
-  { name: '의사소통', range: [25, 28] },
-  { name: '검증', range: [29, 31] },
-  { name: '개선', range: [32, 36] },
-];
+const PROCESS_STAGES = [{
+  name: '사회적 책임 인식',
+  range: [1, 5]
+}, {
+  name: '이해관계자 식별과 참여',
+  range: [6, 11]
+}, {
+  name: '핵심 주제와 쟁점 분석',
+  range: [12, 14]
+}, {
+  name: '우선순위 설정 및 실행전략, 계획 수립',
+  range: [15, 20]
+}, {
+  name: '실행',
+  range: [21, 24]
+}, {
+  name: '의사소통',
+  range: [25, 28]
+}, {
+  name: '검증',
+  range: [29, 31]
+}, {
+  name: '개선',
+  range: [32, 36]
+}];
 const PROCESS_POINT_SCALE = [10, 8, 6, 4, 0]; // 보기 위치(A,B,C,D,E)별 고정 배점
 const PROCESS_MAX_PER_ITEM = 10;
 
 // 성과(진단) 영역: 7개 핵심주제(= 소분류), 보기 위치별 고정 배점(A,B,C / 이후는 0)
-const PERFORMANCE_TOPIC_ORDER = [
-  '조직거버넌스', '인권', '노동관행', '환경', '공정운영관행', '소비자이슈', '지역사회 참여 및 발전',
-];
+const PERFORMANCE_TOPIC_ORDER = ['조직거버넌스', '인권', '노동관행', '환경', '공정운영관행', '소비자이슈', '지역사회 참여 및 발전'];
 const PERFORMANCE_POINT_SCALE = [4, 2, 0];
 const PERFORMANCE_MAX_PER_ITEM = 4;
-
 function pointForJudgment(item, optionKey, scale) {
   if (!optionKey) return 0;
-  const idx = item.options.findIndex((o) => o.key === optionKey);
+  const idx = item.options.findIndex(o => o.key === optionKey);
   if (idx === -1) return 0;
   return scale[idx] !== undefined ? scale[idx] : 0;
 }
-
 const TIER_STYLE = {
-  good: { badge: 'bg-emerald-100 text-emerald-800' },
-  mid: { badge: 'bg-amber-100 text-amber-800' },
-  low: { badge: 'bg-red-100 text-red-800' },
-  none: { badge: 'bg-slate-100 text-slate-500' },
+  good: {
+    badge: 'bg-emerald-100 text-emerald-800'
+  },
+  mid: {
+    badge: 'bg-amber-100 text-amber-800'
+  },
+  low: {
+    badge: 'bg-red-100 text-red-800'
+  },
+  none: {
+    badge: 'bg-slate-100 text-slate-500'
+  }
 };
 function tierOf(pct) {
   if (pct === null || pct === undefined) return 'none';
@@ -214,13 +306,19 @@ function tierOf(pct) {
 // '해당사항 없음' 류의 보기는 응답으로는 인정하되 pct: null 로 반환해 평균/취약목록 집계에서 제외한다.
 function scoreInfo(item, optionKey) {
   if (!item || !optionKey) return null;
-  const opt = item.options.find((o) => o.key === optionKey);
+  const opt = item.options.find(o => o.key === optionKey);
   if (!opt) return null;
-  if (opt.isNA || opt.score === null) return { opt, pct: null };
-  const scorableCount = item.options.filter((o) => !o.isNA).length;
+  if (opt.isNA || opt.score === null) return {
+    opt,
+    pct: null
+  };
+  const scorableCount = item.options.filter(o => !o.isNA).length;
   const max = scorableCount - 1;
-  const pct = max > 0 ? Math.round((opt.score / max) * 100) : 100;
-  return { opt, pct };
+  const pct = max > 0 ? Math.round(opt.score / max * 100) : 100;
+  return {
+    opt,
+    pct
+  };
 }
 
 /* ================================================================ */
@@ -233,21 +331,22 @@ function scoreInfo(item, optionKey) {
 function isNAOptionText(t) {
   return /해\s*당\s*사\s*항\s*없\s*음|해당없음|해당\s*무|N\s*\/\s*A/i.test(t);
 }
-
 function extractOptions(raw) {
   if (!raw) return [];
   const text = raw.trim();
   const letterRe = /([A-Z])\s*[:.．]\s*([\s\S]*?)(?=(?:[A-Z]\s*[:.．])|$)/g;
-  let matches = [...text.matchAll(letterRe)].filter((m) => m[2].trim().length > 0);
+  let matches = [...text.matchAll(letterRe)].filter(m => m[2].trim().length > 0);
   if (!matches.length) {
     const ynRe = /(예|아니오)\s*[:.．]?\s*([\s\S]*?)(?=(?:예|아니오)\s*[:.．]?|$)/g;
     matches = [...text.matchAll(ynRe)];
   }
   const n = matches.length;
   if (!n) return [];
-  const naFlags = matches.map((m) => isNAOptionText(m[2]));
+  const naFlags = matches.map(m => isNAOptionText(m[2]));
   const scorableIndices = [];
-  naFlags.forEach((isNA, idx) => { if (!isNA) scorableIndices.push(idx); });
+  naFlags.forEach((isNA, idx) => {
+    if (!isNA) scorableIndices.push(idx);
+  });
   return matches.map((m, idx) => {
     const isNA = naFlags[idx];
     const rank = scorableIndices.indexOf(idx);
@@ -255,24 +354,23 @@ function extractOptions(raw) {
       key: m[1],
       text: m[2].trim().replace(/\s+/g, ' '),
       isNA,
-      score: isNA ? null : (scorableIndices.length - 1 - rank),
+      score: isNA ? null : scorableIndices.length - 1 - rank
     };
   });
 }
-
 function splitBlocks(text) {
   const lines = text.split(/\r?\n/);
   const blocks = [];
   let current = [];
-  const isSeparator = (l) => /^(-{3,}|\/{3,})\s*$/.test(l.trim());
-  const isNoMarker = (l) => /^\s*번호\s*[:：]/.test(l);
+  const isSeparator = l => /^(-{3,}|\/{3,})\s*$/.test(l.trim());
+  const isNoMarker = l => /^\s*번호\s*[:：]/.test(l);
   for (const line of lines) {
     if (isSeparator(line)) {
       if (current.length) blocks.push(current);
       current = [];
       continue;
     }
-    if (isNoMarker(line) && current.some((l) => isNoMarker(l))) {
+    if (isNoMarker(line) && current.some(l => isNoMarker(l))) {
       blocks.push(current);
       current = [line];
       continue;
@@ -282,14 +380,24 @@ function splitBlocks(text) {
   if (current.length) blocks.push(current);
   return blocks;
 }
-
 const FIELD_MARKERS = {
-  번호: 'no', 카테고리: 'category', 소분류: 'subCategory', 문항: 'question', 설명: 'context',
-  옵션: 'optionsRaw', 보기: 'optionsRaw',
+  번호: 'no',
+  카테고리: 'category',
+  소분류: 'subCategory',
+  문항: 'question',
+  설명: 'context',
+  옵션: 'optionsRaw',
+  보기: 'optionsRaw'
 };
-
 function parseBlock(lines) {
-  const field = { no: '', category: '', subCategory: '', question: '', context: '', optionsRaw: '' };
+  const field = {
+    no: '',
+    category: '',
+    subCategory: '',
+    question: '',
+    context: '',
+    optionsRaw: ''
+  };
   let currentKey = null;
   for (const line of lines) {
     const m = line.match(/^\s*(번호|카테고리|소분류|문항|설명|옵션|보기)\s*[:：]\s*(.*)$/);
@@ -300,7 +408,9 @@ function parseBlock(lines) {
       field[currentKey] = field[currentKey] ? field[currentKey] + '\n' + line : line;
     }
   }
-  Object.keys(field).forEach((k) => { field[k] = (field[k] || '').trim(); });
+  Object.keys(field).forEach(k => {
+    field[k] = (field[k] || '').trim();
+  });
   return field;
 }
 
@@ -308,13 +418,14 @@ function parseBlock(lines) {
 // 안 나온 다른 문항은 그대로 유지된다. touchedCount 는 이번에 새로 추가/갱신된 개수.
 function parseItemsBlockText(text, existingItems) {
   const map = {};
-  existingItems.forEach((it) => { map[mergeKey(it.no, it.category)] = it; });
+  existingItems.forEach(it => {
+    map[mergeKey(it.no, it.category)] = it;
+  });
   const blocks = splitBlocks(text);
   let counter = 0;
   let skipped = 0;
   let touchedCount = 0;
-
-  blocks.forEach((lines) => {
+  blocks.forEach(lines => {
     const f = parseBlock(lines);
     if (!f.no || !f.question) {
       if (lines.join('').trim()) skipped++;
@@ -324,29 +435,38 @@ function parseItemsBlockText(text, existingItems) {
     const key = mergeKey(f.no, f.category);
     const existing = map[key];
     map[key] = {
-      id: existing ? existing.id : 'item-' + key + '-' + (counter++),
+      id: existing ? existing.id : 'item-' + key + '-' + counter++,
       no: f.no,
       category: f.category,
       subCategory: f.subCategory,
       question: f.question,
       context: f.context,
-      options: options.length ? options : [
-        { key: '예', text: '', score: 1 },
-        { key: '아니오', text: '', score: 0 },
-      ],
+      options: options.length ? options : [{
+        key: '예',
+        text: '',
+        score: 1
+      }, {
+        key: '아니오',
+        text: '',
+        score: 0
+      }]
     };
     touchedCount++;
   });
-
   const parsed = Object.values(map).sort((a, b) => {
-    const ca = categorySortKey(a.category), cb = categorySortKey(b.category);
+    const ca = categorySortKey(a.category),
+      cb = categorySortKey(b.category);
     if (ca !== cb) return ca - cb;
-    const na = parseFloat(a.no), nb = parseFloat(b.no);
+    const na = parseFloat(a.no),
+      nb = parseFloat(b.no);
     if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
     return String(a.no).localeCompare(String(b.no), 'ko');
   });
-
-  return { parsed, skipped, touchedCount };
+  return {
+    parsed,
+    skipped,
+    touchedCount
+  };
 }
 
 /* 지금까지 대화에서 확정된 문항. 여기를 채우면 다음 접속 때 자동으로 반영됩니다
@@ -2247,29 +2367,29 @@ A. 상승세
 B. 과거 유사
 C. 하락세 또는 실시하지 않음`;
 
-
-
 /* ================================================================ */
 /* UI 프리미티브                                                       */
 /* ================================================================ */
 
-const inputCls =
-  'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400';
-const btnBase =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
+const inputCls = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400';
+const btnBase = 'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed';
 const btnSecondary = btnBase + ' bg-white border border-slate-300 text-slate-700 hover:bg-slate-50';
 const btnGhost = btnBase + ' text-slate-500 hover:bg-slate-100';
-
-function Card({ children, className = '' }) {
-  return <div className={'rounded-xl border border-slate-200 bg-white shadow-sm ' + className}>{children}</div>;
+function Card({
+  children,
+  className = ''
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: 'rounded-xl border border-slate-200 bg-white shadow-sm ' + className
+  }, children);
 }
-function CategoryPill({ category }) {
+function CategoryPill({
+  category
+}) {
   const c = categoryColor(category);
-  return (
-    <span className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium ${c.bg} ${c.text} ${c.border}`}>
-      {catLabel(category)}
-    </span>
-  );
+  return /*#__PURE__*/React.createElement("span", {
+    className: `inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium ${c.bg} ${c.text} ${c.border}`
+  }, catLabel(category));
 }
 
 /* ================================================================ */
@@ -2283,33 +2403,33 @@ function HRDiagnosisTool() {
   const items = useMemo(() => parseItemsBlockText(ITEMS_TEXT, []).parsed, []);
   const [judgments, setJudgments] = useState({});
   const [saveStatus, setSaveStatus] = useState('idle');
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedCompanyId, setExpandedCompanyId] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('전체');
   const [jumpSearch, setJumpSearch] = useState('');
-
   const [resultCompanyFilter, setResultCompanyFilter] = useState('전체');
   const [scoreCompanyId, setScoreCompanyId] = useState('');
   const [resultCategoryFilter, setResultCategoryFilter] = useState('전체');
-
   const saveTimers = useRef({});
 
   // 마운트 시: Supabase judgments 테이블에서 전체 판정 데이터를 불러옴.
   // 문항·계열사는 소스 코드에 고정되어 있어(ITEMS_TEXT / DEFAULT_COMPANIES) 별도 로딩이 필요 없음.
   useEffect(() => {
     (async () => {
-      const { data, error } = await sbSelectAll('judgments');
+      const {
+        data,
+        error
+      } = await sbSelectAll('judgments');
       if (error) {
         console.error('불러오기 실패:', error);
       } else if (data) {
         const map = {};
-        data.forEach((row) => {
+        data.forEach(row => {
           map[`${row.item_id}::${row.company_id}`] = {
             optionKey: row.option_key,
             note: row.note || '',
             source: row.source || '',
-            updatedAt: row.updated_at,
+            updatedAt: row.updated_at
           };
         });
         setJudgments(map);
@@ -2321,18 +2441,16 @@ function HRDiagnosisTool() {
   // 문항+계열사 셀 하나 단위로 디바운스 후 Supabase에 upsert (관계형 저장이라 통짜 blob 대신 행 단위 저장)
   const saveJudgmentRow = useCallback(async (itemId, companyId, data) => {
     setSaveStatus('saving');
-    const { error } = await sbUpsert(
-      'judgments',
-      {
-        item_id: itemId,
-        company_id: companyId,
-        option_key: data.optionKey,
-        note: data.note || '',
-        source: data.source || '',
-        updated_at: data.updatedAt,
-      },
-      'item_id,company_id'
-    );
+    const {
+      error
+    } = await sbUpsert('judgments', {
+      item_id: itemId,
+      company_id: companyId,
+      option_key: data.optionKey,
+      note: data.note || '',
+      source: data.source || '',
+      updated_at: data.updatedAt
+    }, 'item_id,company_id');
     if (error) {
       console.error('저장 실패:', error);
       setSaveStatus('idle');
@@ -2341,123 +2459,173 @@ function HRDiagnosisTool() {
     setSaveStatus('saved');
     setTimeout(() => setSaveStatus('idle'), 1200);
   }, []);
-
   const categories = useMemo(() => {
-    const set = new Set(items.map((it) => catLabel(it.category)));
+    const set = new Set(items.map(it => catLabel(it.category)));
     return ['전체', ...Array.from(set)];
   }, [items]);
-
   const filteredItems = useMemo(() => {
     let list = items;
-    if (categoryFilter !== '전체') list = list.filter((it) => catLabel(it.category) === categoryFilter);
+    if (categoryFilter !== '전체') list = list.filter(it => catLabel(it.category) === categoryFilter);
     return list;
   }, [items, categoryFilter]);
-
   useEffect(() => {
     if (currentIndex >= filteredItems.length) setCurrentIndex(0);
   }, [filteredItems, currentIndex]);
-
   const currentItem = filteredItems[currentIndex];
-
-  const getJudgment = useCallback(
-    (itemId, companyId) => judgments[`${itemId}::${companyId}`] || { optionKey: null, note: '', source: '' },
-    [judgments]
-  );
+  const getJudgment = useCallback((itemId, companyId) => judgments[`${itemId}::${companyId}`] || {
+    optionKey: null,
+    note: '',
+    source: ''
+  }, [judgments]);
   const setJudgment = useCallback((itemId, companyId, patch) => {
     const key = `${itemId}::${companyId}`;
-    setJudgments((prev) => {
-      const current = prev[key] || { optionKey: null, note: '', source: '' };
-      const next = { ...current, ...patch, updatedAt: new Date().toISOString() };
+    setJudgments(prev => {
+      const current = prev[key] || {
+        optionKey: null,
+        note: '',
+        source: ''
+      };
+      const next = {
+        ...current,
+        ...patch,
+        updatedAt: new Date().toISOString()
+      };
       if (saveTimers.current[key]) clearTimeout(saveTimers.current[key]);
       saveTimers.current[key] = setTimeout(() => {
         saveJudgmentRow(itemId, companyId, next);
       }, 600);
-      return { ...prev, [key]: next };
+      return {
+        ...prev,
+        [key]: next
+      };
     });
   }, [saveJudgmentRow]);
-
   const totalCells = items.length * companies.length;
-
   const overall = useMemo(() => {
-    let judgedCells = 0, scoredCells = 0, sumPct = 0, lowCount = 0, naCells = 0;
-    items.forEach((it) => companies.forEach((c) => {
+    let judgedCells = 0,
+      scoredCells = 0,
+      sumPct = 0,
+      lowCount = 0,
+      naCells = 0;
+    items.forEach(it => companies.forEach(c => {
       const j = getJudgment(it.id, c.id);
       const info = scoreInfo(it, j.optionKey);
       if (info) {
         judgedCells++;
-        if (info.pct !== null) { scoredCells++; sumPct += info.pct; if (tierOf(info.pct) === 'low') lowCount++; }
-        else naCells++;
+        if (info.pct !== null) {
+          scoredCells++;
+          sumPct += info.pct;
+          if (tierOf(info.pct) === 'low') lowCount++;
+        } else naCells++;
       }
     }));
-    return { judgedCells, avgPct: scoredCells ? Math.round(sumPct / scoredCells) : null, lowCount, naCells };
+    return {
+      judgedCells,
+      avgPct: scoredCells ? Math.round(sumPct / scoredCells) : null,
+      lowCount,
+      naCells
+    };
   }, [items, companies, getJudgment]);
-
   const itemCompleteCount = useMemo(() => {
     if (!items.length) return 0;
-    return items.filter((it) => companies.every((c) => getJudgment(it.id, c.id).optionKey)).length;
+    return items.filter(it => companies.every(c => getJudgment(it.id, c.id).optionKey)).length;
   }, [items, companies, getJudgment]);
-
-  const companySummary = useMemo(() => companies.map((c) => {
-    let judgedCount = 0, scoredCount = 0, sumPct = 0, lowCount = 0;
-    items.forEach((it) => {
+  const companySummary = useMemo(() => companies.map(c => {
+    let judgedCount = 0,
+      scoredCount = 0,
+      sumPct = 0,
+      lowCount = 0;
+    items.forEach(it => {
       const j = getJudgment(it.id, c.id);
       const info = scoreInfo(it, j.optionKey);
       if (info) {
         judgedCount++;
-        if (info.pct !== null) { scoredCount++; sumPct += info.pct; if (tierOf(info.pct) === 'low') lowCount++; }
+        if (info.pct !== null) {
+          scoredCount++;
+          sumPct += info.pct;
+          if (tierOf(info.pct) === 'low') lowCount++;
+        }
       }
     });
-    return { id: c.id, name: c.name, judgedCount, total: items.length, lowCount, avg: scoredCount ? Math.round(sumPct / scoredCount) : null };
+    return {
+      id: c.id,
+      name: c.name,
+      judgedCount,
+      total: items.length,
+      lowCount,
+      avg: scoredCount ? Math.round(sumPct / scoredCount) : null
+    };
   }), [companies, items, getJudgment]);
-
   const categorySummary = useMemo(() => {
     const map = {};
-    items.forEach((it) => {
+    items.forEach(it => {
       const cat = catLabel(it.category);
-      if (!map[cat]) map[cat] = { category: cat, itemCount: 0, judgedCount: 0, scoredCount: 0, sumPct: 0 };
+      if (!map[cat]) map[cat] = {
+        category: cat,
+        itemCount: 0,
+        judgedCount: 0,
+        scoredCount: 0,
+        sumPct: 0
+      };
       map[cat].itemCount++;
-      companies.forEach((c) => {
+      companies.forEach(c => {
         const j = getJudgment(it.id, c.id);
         const info = scoreInfo(it, j.optionKey);
         if (info) {
           map[cat].judgedCount++;
-          if (info.pct !== null) { map[cat].scoredCount++; map[cat].sumPct += info.pct; }
+          if (info.pct !== null) {
+            map[cat].scoredCount++;
+            map[cat].sumPct += info.pct;
+          }
         }
       });
     });
-    return Object.values(map)
-      .map((row) => ({ ...row, avg: row.scoredCount ? Math.round(row.sumPct / row.scoredCount) : null }))
-      .sort((a, b) => { if (a.avg === null) return 1; if (b.avg === null) return -1; return a.avg - b.avg; });
+    return Object.values(map).map(row => ({
+      ...row,
+      avg: row.scoredCount ? Math.round(row.sumPct / row.scoredCount) : null
+    })).sort((a, b) => {
+      if (a.avg === null) return 1;
+      if (b.avg === null) return -1;
+      return a.avg - b.avg;
+    });
   }, [items, companies, getJudgment]);
-
   const weakList = useMemo(() => {
     const rows = [];
-    items.forEach((it) => companies.forEach((c) => {
+    items.forEach(it => companies.forEach(c => {
       const j = getJudgment(it.id, c.id);
       const info = scoreInfo(it, j.optionKey);
       if (info && tierOf(info.pct) === 'low') {
         rows.push({
-          itemId: it.id, itemNo: it.no, category: it.category, question: it.question,
-          companyId: c.id, companyName: c.name, optionKey: j.optionKey,
-          optionText: info.opt.text, pct: info.pct, note: j.note, source: j.source,
+          itemId: it.id,
+          itemNo: it.no,
+          category: it.category,
+          question: it.question,
+          companyId: c.id,
+          companyName: c.name,
+          optionKey: j.optionKey,
+          optionText: info.opt.text,
+          pct: info.pct,
+          note: j.note,
+          source: j.source
         });
       }
     }));
-    return rows.filter((r) =>
-      (resultCompanyFilter === '전체' || r.companyId === resultCompanyFilter) &&
-      (resultCategoryFilter === '전체' || catLabel(r.category) === resultCategoryFilter)
-    );
+    return rows.filter(r => (resultCompanyFilter === '전체' || r.companyId === resultCompanyFilter) && (resultCategoryFilter === '전체' || catLabel(r.category) === resultCategoryFilter));
   }, [items, companies, getJudgment, resultCompanyFilter, resultCategoryFilter]);
 
   /* ---------------- 공식 채점 로직 (프로세스 8단계 / 성과 7개 핵심주제) ---------------- */
-  const computeCompanyOfficialScore = useCallback((companyId) => {
-    const stages = PROCESS_STAGES.map((stage) => {
-      const stageItems = items.filter(
-        (it) => catLabel(it.category) === '프로세스' && parseInt(it.no, 10) >= stage.range[0] && parseInt(it.no, 10) <= stage.range[1]
-      );
-      const counts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+  const computeCompanyOfficialScore = useCallback(companyId => {
+    const stages = PROCESS_STAGES.map(stage => {
+      const stageItems = items.filter(it => catLabel(it.category) === '프로세스' && parseInt(it.no, 10) >= stage.range[0] && parseInt(it.no, 10) <= stage.range[1]);
+      const counts = {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0,
+        E: 0
+      };
       let diagScore = 0;
-      stageItems.forEach((it) => {
+      stageItems.forEach(it => {
         const j = getJudgment(it.id, companyId);
         if (j.optionKey) {
           diagScore += pointForJudgment(it, j.optionKey, PROCESS_POINT_SCALE);
@@ -2465,17 +2633,28 @@ function HRDiagnosisTool() {
         }
       });
       const maxScore = stageItems.length * PROCESS_MAX_PER_ITEM;
-      return { name: stage.name, itemCount: stageItems.length, counts, diagScore, maxScore, score5: maxScore ? (diagScore / maxScore) * 5 : 0 };
+      return {
+        name: stage.name,
+        itemCount: stageItems.length,
+        counts,
+        diagScore,
+        maxScore,
+        score5: maxScore ? diagScore / maxScore * 5 : 0
+      };
     });
-
-    const topics = PERFORMANCE_TOPIC_ORDER.map((topic) => {
-      const topicItems = items.filter((it) => catLabel(it.category) === '진단' && (it.subCategory || '') === topic);
-      const counts = { A: 0, B: 0, C: 0, V: 0 };
+    const topics = PERFORMANCE_TOPIC_ORDER.map(topic => {
+      const topicItems = items.filter(it => catLabel(it.category) === '진단' && (it.subCategory || '') === topic);
+      const counts = {
+        A: 0,
+        B: 0,
+        C: 0,
+        V: 0
+      };
       let diagScore = 0;
-      topicItems.forEach((it) => {
+      topicItems.forEach(it => {
         const j = getJudgment(it.id, companyId);
         if (j.optionKey) {
-          const opt = it.options.find((o) => o.key === j.optionKey);
+          const opt = it.options.find(o => o.key === j.optionKey);
           if (opt && opt.isNA) {
             counts.V++;
           } else {
@@ -2485,469 +2664,687 @@ function HRDiagnosisTool() {
         }
       });
       const maxScore = topicItems.length * PERFORMANCE_MAX_PER_ITEM;
-      return { name: topic, itemCount: topicItems.length, counts, diagScore, maxScore, score5: maxScore ? (diagScore / maxScore) * 5 : 0 };
+      return {
+        name: topic,
+        itemCount: topicItems.length,
+        counts,
+        diagScore,
+        maxScore,
+        score5: maxScore ? diagScore / maxScore * 5 : 0
+      };
     });
-
-    const process = stages.reduce((s, x) => ({ diag: s.diag + x.diagScore, max: s.max + x.maxScore }), { diag: 0, max: 0 });
-    const performance = topics.reduce((s, x) => ({ diag: s.diag + x.diagScore, max: s.max + x.maxScore }), { diag: 0, max: 0 });
+    const process = stages.reduce((s, x) => ({
+      diag: s.diag + x.diagScore,
+      max: s.max + x.maxScore
+    }), {
+      diag: 0,
+      max: 0
+    });
+    const performance = topics.reduce((s, x) => ({
+      diag: s.diag + x.diagScore,
+      max: s.max + x.maxScore
+    }), {
+      diag: 0,
+      max: 0
+    });
     return {
-      stages, topics, process, performance,
-      grand: { diag: process.diag + performance.diag, max: process.max + performance.max },
+      stages,
+      topics,
+      process,
+      performance,
+      grand: {
+        diag: process.diag + performance.diag,
+        max: process.max + performance.max
+      }
     };
   }, [items, getJudgment]);
-
-  const allCompanyScores = useMemo(
-    () => companies.map((c) => ({ id: c.id, name: c.name, ...computeCompanyOfficialScore(c.id) })),
-    [companies, computeCompanyOfficialScore]
-  );
-
+  const allCompanyScores = useMemo(() => companies.map(c => ({
+    id: c.id,
+    name: c.name,
+    ...computeCompanyOfficialScore(c.id)
+  })), [companies, computeCompanyOfficialScore]);
   const jumpToItem = (itemId, companyId) => {
     setCategoryFilter('전체');
     setTimeout(() => {
-      const idx = items.findIndex((it) => it.id === itemId);
+      const idx = items.findIndex(it => it.id === itemId);
       if (idx !== -1) setCurrentIndex(idx);
       if (companyId) setExpandedCompanyId(companyId);
       setActiveTab('check');
     }, 0);
   };
-
   const exportExcel = () => {
     const header = ['번호', '카테고리', '소분류', '문항', '계열사', '선택보기', '보기내용', '충족도(%)', '근거', '출처'];
     const rows = [header];
-    items.forEach((it) => companies.forEach((c) => {
+    items.forEach(it => companies.forEach(c => {
       const j = getJudgment(it.id, c.id);
       const info = scoreInfo(it, j.optionKey);
       let pctCell = '';
       if (info) pctCell = info.pct === null ? '해당없음' : info.pct;
-      rows.push([
-        it.no, catLabel(it.category), it.subCategory || '', it.question, c.name,
-        j.optionKey || '', info ? info.opt.text : '', pctCell,
-        j.note || '', j.source || '',
-      ]);
+      rows.push([it.no, catLabel(it.category), it.subCategory || '', it.question, c.name, j.optionKey || '', info ? info.opt.text : '', pctCell, j.note || '', j.source || '']);
     }));
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [
-      { wch: 6 }, { wch: 10 }, { wch: 16 }, { wch: 45 }, { wch: 14 },
-      { wch: 8 }, { wch: 35 }, { wch: 10 }, { wch: 30 }, { wch: 26 },
-    ];
-
+    ws['!cols'] = [{
+      wch: 6
+    }, {
+      wch: 10
+    }, {
+      wch: 16
+    }, {
+      wch: 45
+    }, {
+      wch: 14
+    }, {
+      wch: 8
+    }, {
+      wch: 35
+    }, {
+      wch: 10
+    }, {
+      wch: 30
+    }, {
+      wch: 26
+    }];
     const scoreHeader = ['계열사', '프로세스 진단점수', '프로세스 총배점', '성과 진단점수', '성과 총배점', '합계 진단점수', '합계 총배점', '5점 환산'];
     const scoreRows = [scoreHeader];
-    allCompanyScores.forEach((s) => {
-      scoreRows.push([
-        s.name, s.process.diag, s.process.max, s.performance.diag, s.performance.max,
-        s.grand.diag, s.grand.max, s.grand.max ? Number(((s.grand.diag / s.grand.max) * 5).toFixed(2)) : '',
-      ]);
+    allCompanyScores.forEach(s => {
+      scoreRows.push([s.name, s.process.diag, s.process.max, s.performance.diag, s.performance.max, s.grand.diag, s.grand.max, s.grand.max ? Number((s.grand.diag / s.grand.max * 5).toFixed(2)) : '']);
     });
     const ws2 = XLSX.utils.aoa_to_sheet(scoreRows);
-    ws2['!cols'] = [{ wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 10 }];
-
+    ws2['!cols'] = [{
+      wch: 16
+    }, {
+      wch: 14
+    }, {
+      wch: 14
+    }, {
+      wch: 12
+    }, {
+      wch: 12
+    }, {
+      wch: 12
+    }, {
+      wch: 12
+    }, {
+      wch: 10
+    }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws2, '공식채점표 요약');
     XLSX.utils.book_append_sheet(wb, ws, '응답 데이터');
     XLSX.writeFile(wb, '인권경영진단_결과.xlsx');
   };
-
   const jumpByNumber = () => {
     const q = jumpSearch.trim();
     if (!q) return;
-    const idx = filteredItems.findIndex((it) => String(it.no) === q || it.question.includes(q));
+    const idx = filteredItems.findIndex(it => String(it.no) === q || it.question.includes(q));
     if (idx !== -1) setCurrentIndex(idx);
   };
-
   if (!loaded) {
-    return <div className="flex items-center justify-center py-24 text-slate-400 text-sm gap-2"><RefreshCw size={16} className="animate-spin" /> 불러오는 중...</div>;
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-center py-24 text-slate-400 text-sm gap-2"
+    }, /*#__PURE__*/React.createElement(RefreshCw, {
+      size: 16,
+      className: "animate-spin"
+    }), " 불러오는 중...");
   }
-
-  return (
-    <div className="w-full max-w-5xl mx-auto text-slate-800">
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-        <div>
-          <h1 className="text-lg font-semibold text-slate-900">동아쏘시오그룹 인권경영 진단</h1>
-          <p className="text-xs text-slate-500 mt-0.5">문항 {items.length}개 · 계열사 {companies.length}개 · 총 {totalCells}개 판정 항목</p>
-        </div>
-        <span className="text-xs text-slate-400 flex items-center gap-1">
-          {saveStatus === 'saving' && (<><RefreshCw size={12} className="animate-spin" /> 저장 중</>)}
-          {saveStatus === 'saved' && (<><Save size={12} /> 저장됨</>)}
-        </span>
-      </div>
-
-      <div className="flex gap-1 mb-5 border-b border-slate-200">
-        {[
-          { key: 'check', label: '문항 체크', icon: ClipboardCheck },
-          { key: 'results', label: '결과', icon: BarChart3 },
-        ].map((t) => (
-          <button key={t.key} onClick={() => setActiveTab(t.key)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${activeTab === t.key ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
-            <t.icon size={15} /> {t.label}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === 'check' && (
-        <div className="space-y-4">
-          {items.length === 0 ? (
-            <Card className="p-8 text-center text-sm text-slate-400">
-              등록된 문항이 없습니다. 문항이 반영되면 여기에 표시됩니다.
-            </Card>
-          ) : (
-            <>
-              <Card className="p-4">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-                  <span>완료된 문항 (계열사 {companies.length}개 전부 응답) {itemCompleteCount} / {items.length}</span>
-                  <span>전체 응답 {overall.judgedCells} / {totalCells}</span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${totalCells ? (overall.judgedCells / totalCells) * 100 : 0}%` }} />
-                </div>
-              </Card>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <select className={inputCls + ' w-auto'} value={categoryFilter} onChange={(e) => { setCategoryFilter(e.target.value); setCurrentIndex(0); }}>
-                  {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-                <div className="flex items-center gap-1">
-                  <input className={inputCls + ' w-40'} placeholder="번호 또는 키워드 검색" value={jumpSearch}
-                    onChange={(e) => setJumpSearch(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && jumpByNumber()} />
-                  <button onClick={jumpByNumber} className={btnGhost}><Search size={14} /></button>
-                </div>
-                <div className="flex-1" />
-                <button onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))} disabled={currentIndex === 0} className={btnSecondary}><ChevronLeft size={14} /> 이전</button>
-                <span className="text-xs text-slate-400 w-16 text-center">{currentIndex + 1} / {filteredItems.length}</span>
-                <button onClick={() => setCurrentIndex((i) => Math.min(filteredItems.length - 1, i + 1))} disabled={currentIndex >= filteredItems.length - 1} className={btnSecondary}>다음 <ChevronRight size={14} /></button>
-              </div>
-
-              {currentItem && (
-                <>
-                  <Card className="p-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-mono text-xs font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5">Q{currentItem.no}</span>
-                      <CategoryPill category={currentItem.category} />
-                      {currentItem.subCategory && (
-                        <span className="text-xs text-slate-500">· {currentItem.subCategory}</span>
-                      )}
-                    </div>
-                    <p className="text-base text-slate-900 font-medium leading-relaxed">{currentItem.question}</p>
-                    {currentItem.context && (
-                      <div className="mt-3 rounded-lg bg-slate-50 border border-slate-200 px-3 py-2">
-                        <p className="text-xs font-semibold text-slate-600 mb-1">설명 / 기준</p>
-                        <p className="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">{currentItem.context}</p>
-                      </div>
-                    )}
-                  </Card>
-
-                  <Card className="p-2 sm:p-3">
-                    <div className="divide-y divide-slate-100">
-                      {companies.map((c) => {
-                        const j = getJudgment(currentItem.id, c.id);
-                        const info = scoreInfo(currentItem, j.optionKey);
-                        const tier = tierOf(info ? info.pct : null);
-                        const isExpanded = expandedCompanyId === c.id;
-                        return (
-                          <div key={c.id} className="py-2.5 px-2">
-                            <button onClick={() => setExpandedCompanyId(isExpanded ? null : c.id)} className="w-full flex items-center gap-3 flex-wrap text-left">
-                              <span className="text-sm font-medium text-slate-800 w-28 shrink-0">{c.name}</span>
-                              <span className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold ${TIER_STYLE[tier].badge}`}>
-                                {j.optionKey ? (info.pct !== null ? `${j.optionKey} · ${info.pct}%` : `${j.optionKey} · 해당없음`) : '미응답'}
-                              </span>
-                              {(j.note || j.source) && <span className="text-xs text-slate-400">근거 있음</span>}
-                              <ChevronDown size={14} className={`ml-auto text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                            </button>
-                            {isExpanded && (
-                              <div className="mt-2.5 space-y-2 bg-slate-50 rounded-lg p-3">
-                                <div className="space-y-1.5">
-                                  {currentItem.options.map((opt) => {
-                                    const selected = j.optionKey === opt.key;
-                                    return (
-                                      <button key={opt.key} onClick={() => setJudgment(currentItem.id, c.id, { optionKey: opt.key })}
-                                        className={`w-full text-left rounded-lg border px-3 py-2 text-sm transition-colors ${selected ? 'border-indigo-500 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}>
-                                        <span className="font-mono font-semibold mr-2">{opt.key}</span>{opt.text}
-                                      </button>
-                                    );
-                                  })}
-                                  {j.optionKey && (
-                                    <button onClick={() => setJudgment(currentItem.id, c.id, { optionKey: null })} className="text-xs text-slate-400 hover:text-red-600">선택 해제</button>
-                                  )}
-                                </div>
-                                <div>
-                                  <label className="text-xs text-slate-500 mb-1 block">판정 근거</label>
-                                  <textarea className={inputCls + ' h-20 resize-y'} placeholder="근거가 되는 증빙(정책 문서, 교육 기록, 인터뷰 등)을 기록하세요."
-                                    value={j.note} onChange={(e) => setJudgment(currentItem.id, c.id, { note: e.target.value })} />
-                                </div>
-                                <div>
-                                  <label className="text-xs text-slate-500 mb-1 block">출처 / 증빙자료</label>
-                                  <input className={inputCls} placeholder="예: 2025 지속가능경영보고서 p.42, 취업규칙 제12조"
-                                    value={j.source} onChange={(e) => setJudgment(currentItem.id, c.id, { source: e.target.value })} />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </Card>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'results' && (
-        <div className="space-y-5">
-          {items.length === 0 ? (
-            <Card className="p-8 text-center text-sm text-slate-400">문항이 없어 결과를 표시할 수 없습니다.</Card>
-          ) : (
-            <>
-              <div className="flex items-center justify-end">
-                <button onClick={exportExcel} className={btnSecondary}><Download size={14} /> 엑셀로 내보내기</button>
-              </div>
-
-              <Card className="p-5">
-                <h2 className="text-sm font-semibold text-slate-900 mb-1">진단영역별 점수 요약 — 계열사 비교</h2>
-                <p className="text-xs text-slate-500 mb-3">프로세스 문항은 A~E 위치별 10·8·6·4·0점, 진단(성과) 문항은 A~C 위치별 4·2·0점(해당없음은 0점) 고정 배점 기준입니다.</p>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-left text-xs text-slate-400 border-b border-slate-200">
-                        <th className="py-2 pr-3 font-medium">계열사</th>
-                        <th className="py-2 pr-3 font-medium">프로세스 (/360)</th>
-                        <th className="py-2 pr-3 font-medium">성과 (/640)</th>
-                        <th className="py-2 pr-3 font-medium">합계 (/1000)</th>
-                        <th className="py-2 pr-3 font-medium">5점 환산</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {allCompanyScores
-                        .slice()
-                        .sort((a, b) => b.grand.diag - a.grand.diag)
-                        .map((s) => (
-                          <tr key={s.id} className="border-b border-slate-100 last:border-0">
-                            <td className="py-2 pr-3 font-medium text-slate-800">{s.name}</td>
-                            <td className="py-2 pr-3 text-slate-600">{s.process.diag.toFixed(1)} / {s.process.max}</td>
-                            <td className="py-2 pr-3 text-slate-600">{s.performance.diag.toFixed(1)} / {s.performance.max}</td>
-                            <td className="py-2 pr-3 font-semibold text-slate-800">{s.grand.diag.toFixed(1)} / {s.grand.max}</td>
-                            <td className="py-2 pr-3 text-indigo-600 font-semibold">{s.grand.max ? ((s.grand.diag / s.grand.max) * 5).toFixed(1) : '-'}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-
-              <Card className="p-5">
-                <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-                  <h2 className="text-sm font-semibold text-slate-900">계열사별 상세 채점표</h2>
-                  <select className={inputCls + ' w-auto'} value={scoreCompanyId || allCompanyScores[0]?.id || ''} onChange={(e) => setScoreCompanyId(e.target.value)}>
-                    {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                </div>
-                {(() => {
-                  const s = allCompanyScores.find((x) => x.id === (scoreCompanyId || allCompanyScores[0]?.id));
-                  if (!s) return null;
-                  return (
-                    <>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-                        <div className="rounded-lg bg-slate-50 p-3"><p className="text-xs text-slate-500 mb-1">프로세스 진단점수</p><p className="text-lg font-semibold text-slate-800">{s.process.diag.toFixed(1)} / {s.process.max}</p></div>
-                        <div className="rounded-lg bg-slate-50 p-3"><p className="text-xs text-slate-500 mb-1">성과 진단점수</p><p className="text-lg font-semibold text-slate-800">{s.performance.diag.toFixed(1)} / {s.performance.max}</p></div>
-                        <div className="rounded-lg bg-slate-50 p-3"><p className="text-xs text-slate-500 mb-1">합계</p><p className="text-lg font-semibold text-slate-800">{s.grand.diag.toFixed(1)} / {s.grand.max}</p></div>
-                        <div className="rounded-lg bg-indigo-50 p-3"><p className="text-xs text-indigo-500 mb-1">5점 환산</p><p className="text-lg font-semibold text-indigo-700">{s.grand.max ? ((s.grand.diag / s.grand.max) * 5).toFixed(1) : '-'}</p></div>
-                      </div>
-
-                      <h3 className="text-xs font-semibold text-slate-500 mb-2">프로세스 영역 (8단계)</h3>
-                      <div className="overflow-x-auto mb-5">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="text-left text-xs text-slate-400 border-b border-slate-200">
-                              <th className="py-1.5 pr-3 font-medium">단계</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">문항수</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">A</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">B</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">C</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">D</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">E</th>
-                              <th className="py-1.5 pr-3 font-medium text-right">진단점수</th>
-                              <th className="py-1.5 pr-3 font-medium text-right">총배점</th>
-                              <th className="py-1.5 pr-3 font-medium text-right">5점만점</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {s.stages.map((row) => (
-                              <tr key={row.name} className="border-b border-slate-100 last:border-0">
-                                <td className="py-1.5 pr-3 text-slate-700">{row.name}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.itemCount}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.A}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.B}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.C}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.D}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.E}</td>
-                                <td className="py-1.5 pr-3 text-right text-slate-700">{row.diagScore.toFixed(1)}</td>
-                                <td className="py-1.5 pr-3 text-right text-slate-500">{row.maxScore}</td>
-                                <td className="py-1.5 pr-3 text-right font-semibold text-slate-700">{row.score5.toFixed(1)}</td>
-                              </tr>
-                            ))}
-                            <tr className="font-semibold text-slate-800 bg-slate-50">
-                              <td className="py-1.5 pr-3">합계</td>
-                              <td className="py-1.5 pr-2 text-center">{s.stages.reduce((a, r) => a + r.itemCount, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.stages.reduce((a, r) => a + r.counts.A, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.stages.reduce((a, r) => a + r.counts.B, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.stages.reduce((a, r) => a + r.counts.C, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.stages.reduce((a, r) => a + r.counts.D, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.stages.reduce((a, r) => a + r.counts.E, 0)}</td>
-                              <td className="py-1.5 pr-3 text-right">{s.process.diag.toFixed(1)}</td>
-                              <td className="py-1.5 pr-3 text-right">{s.process.max}</td>
-                              <td className="py-1.5 pr-3 text-right">{s.process.max ? ((s.process.diag / s.process.max) * 5).toFixed(1) : '-'}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <h3 className="text-xs font-semibold text-slate-500 mb-2">성과(진단) 영역 — 핵심주제 7개</h3>
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="text-left text-xs text-slate-400 border-b border-slate-200">
-                              <th className="py-1.5 pr-3 font-medium">핵심주제</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">문항수</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">A</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">B</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">C</th>
-                              <th className="py-1.5 pr-2 font-medium text-center">V</th>
-                              <th className="py-1.5 pr-3 font-medium text-right">진단점수</th>
-                              <th className="py-1.5 pr-3 font-medium text-right">총배점</th>
-                              <th className="py-1.5 pr-3 font-medium text-right">5점만점</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {s.topics.map((row) => (
-                              <tr key={row.name} className="border-b border-slate-100 last:border-0">
-                                <td className="py-1.5 pr-3 text-slate-700">{row.name}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.itemCount}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.A}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.B}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.C}</td>
-                                <td className="py-1.5 pr-2 text-center text-slate-500">{row.counts.V}</td>
-                                <td className="py-1.5 pr-3 text-right text-slate-700">{row.diagScore.toFixed(1)}</td>
-                                <td className="py-1.5 pr-3 text-right text-slate-500">{row.maxScore}</td>
-                                <td className="py-1.5 pr-3 text-right font-semibold text-slate-700">{row.score5.toFixed(1)}</td>
-                              </tr>
-                            ))}
-                            <tr className="font-semibold text-slate-800 bg-slate-50">
-                              <td className="py-1.5 pr-3">합계</td>
-                              <td className="py-1.5 pr-2 text-center">{s.topics.reduce((a, r) => a + r.itemCount, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.topics.reduce((a, r) => a + r.counts.A, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.topics.reduce((a, r) => a + r.counts.B, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.topics.reduce((a, r) => a + r.counts.C, 0)}</td>
-                              <td className="py-1.5 pr-2 text-center">{s.topics.reduce((a, r) => a + r.counts.V, 0)}</td>
-                              <td className="py-1.5 pr-3 text-right">{s.performance.diag.toFixed(1)}</td>
-                              <td className="py-1.5 pr-3 text-right">{s.performance.max}</td>
-                              <td className="py-1.5 pr-3 text-right">{s.performance.max ? ((s.performance.diag / s.performance.max) * 5).toFixed(1) : '-'}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
-                  );
-                })()}
-              </Card>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Card className="p-4"><p className="text-xs text-slate-500 mb-1">전체 진행률</p><p className="text-2xl font-semibold text-slate-900">{totalCells ? Math.round((overall.judgedCells / totalCells) * 100) : 0}%</p><p className="text-xs text-slate-400 mt-0.5">{overall.judgedCells} / {totalCells}</p></Card>
-                <Card className="p-4"><p className="text-xs text-slate-500 mb-1">평균 충족도</p><p className="text-2xl font-semibold text-indigo-600">{overall.avgPct === null ? '-' : `${overall.avgPct}%`}</p></Card>
-                <Card className="p-4"><p className="text-xs text-slate-500 mb-1">취약 응답 (50% 미만)</p><p className="text-2xl font-semibold text-red-600">{overall.lowCount}</p></Card>
-                <Card className="p-4"><p className="text-xs text-slate-500 mb-1">미응답</p><p className="text-2xl font-semibold text-slate-400">{totalCells - overall.judgedCells}</p></Card>
-              </div>
-
-              <Card className="p-5">
-                <h2 className="text-sm font-semibold text-slate-900 mb-3">계열사별 현황</h2>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead><tr className="text-left text-xs text-slate-400 border-b border-slate-200"><th className="py-2 pr-3 font-medium">계열사</th><th className="py-2 pr-3 font-medium">응답</th><th className="py-2 pr-3 font-medium">평균 충족도</th><th className="py-2 pr-3 font-medium">취약 응답</th></tr></thead>
-                    <tbody>
-                      {companySummary.map((row) => (
-                        <tr key={row.id} className="border-b border-slate-100 last:border-0">
-                          <td className="py-2 pr-3 font-medium text-slate-800">{row.name}</td>
-                          <td className="py-2 pr-3 text-slate-500">{row.judgedCount} / {row.total}</td>
-                          <td className="py-2 pr-3">{row.avg === null ? <span className="text-slate-300">-</span> : <span className={row.avg < 50 ? 'text-red-600 font-semibold' : 'text-slate-700'}>{row.avg}%</span>}</td>
-                          <td className="py-2 pr-3 text-red-600">{row.lowCount || <span className="text-slate-300">0</span>}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-
-              <Card className="p-5">
-                <h2 className="text-sm font-semibold text-slate-900 mb-1">카테고리별 현황</h2>
-                <p className="text-xs text-slate-500 mb-3">평균 충족도가 낮은 순으로 정렬됩니다.</p>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead><tr className="text-left text-xs text-slate-400 border-b border-slate-200"><th className="py-2 pr-3 font-medium">카테고리</th><th className="py-2 pr-3 font-medium">문항수</th><th className="py-2 pr-3 font-medium">응답수</th><th className="py-2 pr-3 font-medium">평균 충족도</th></tr></thead>
-                    <tbody>
-                      {categorySummary.map((row) => (
-                        <tr key={row.category} className="border-b border-slate-100 last:border-0">
-                          <td className="py-2 pr-3"><CategoryPill category={row.category} /></td>
-                          <td className="py-2 pr-3 text-slate-600">{row.itemCount}</td>
-                          <td className="py-2 pr-3 text-slate-500">{row.judgedCount}</td>
-                          <td className="py-2 pr-3">{row.avg === null ? <span className="text-slate-300">-</span> : <span className={row.avg < 50 ? 'text-red-600 font-semibold' : 'text-slate-700'}>{row.avg}%</span>}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-
-              <Card className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <AlertTriangle size={16} className="text-red-500" />
-                  <h2 className="text-sm font-semibold text-slate-900">취약 응답 목록 ({weakList.length}건, 충족도 50% 미만)</h2>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <select className={inputCls + ' w-auto'} value={resultCompanyFilter} onChange={(e) => setResultCompanyFilter(e.target.value)}>
-                    <option value="전체">전체 계열사</option>
-                    {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                  <select className={inputCls + ' w-auto'} value={resultCategoryFilter} onChange={(e) => setResultCategoryFilter(e.target.value)}>
-                    <option value="전체">전체 카테고리</option>
-                    {categories.filter((c) => c !== '전체').map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                {weakList.length === 0 ? (
-                  <p className="text-sm text-slate-400 py-4 text-center">해당 조건에 취약 응답이 없습니다.</p>
-                ) : (
-                  <div className="max-h-96 overflow-y-auto space-y-2">
-                    {weakList.map((r, idx) => (
-                      <div key={idx} className="rounded-lg border border-red-100 bg-red-50/50 p-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-mono text-xs text-slate-500">Q{r.itemNo}</span>
-                              <CategoryPill category={r.category} />
-                              <span className="text-xs font-semibold text-slate-700">{r.companyName}</span>
-                              <span className="text-xs font-semibold text-red-600">{r.optionKey} · {r.pct}%</span>
-                            </div>
-                            <p className="text-sm text-slate-800">{r.question}</p>
-                            {r.optionText && <p className="text-xs text-slate-500 mt-1">선택 보기: {r.optionText}</p>}
-                            {r.note && <p className="text-xs text-slate-500 mt-0.5">근거: {r.note}</p>}
-                          </div>
-                          <button onClick={() => jumpToItem(r.itemId, r.companyId)} className={btnGhost + ' shrink-0'}>이동 <ArrowRight size={13} /></button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "w-full max-w-5xl mx-auto text-slate-800"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between flex-wrap gap-2 mb-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "text-lg font-semibold text-slate-900"
+  }, "동아쏘시오그룹 인권경영 진단"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-0.5"
+  }, "문항 ", items.length, "개 · 계열사 ", companies.length, "개 · 총 ", totalCells, "개 판정 항목")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-400 flex items-center gap-1"
+  }, saveStatus === 'saving' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(RefreshCw, {
+    size: 12,
+    className: "animate-spin"
+  }), " 저장 중"), saveStatus === 'saved' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Save, {
+    size: 12
+  }), " 저장됨"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1 mb-5 border-b border-slate-200"
+  }, [{
+    key: 'check',
+    label: '문항 체크',
+    icon: ClipboardCheck
+  }, {
+    key: 'results',
+    label: '결과',
+    icon: BarChart3
+  }].map(t => /*#__PURE__*/React.createElement("button", {
+    key: t.key,
+    onClick: () => setActiveTab(t.key),
+    className: `flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${activeTab === t.key ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`
+  }, /*#__PURE__*/React.createElement(t.icon, {
+    size: 15
+  }), " ", t.label))), activeTab === 'check' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4"
+  }, items.length === 0 ? /*#__PURE__*/React.createElement(Card, {
+    className: "p-8 text-center text-sm text-slate-400"
+  }, "등록된 문항이 없습니다. 문항이 반영되면 여기에 표시됩니다.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Card, {
+    className: "p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs text-slate-500 mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, "완료된 문항 (계열사 ", companies.length, "개 전부 응답) ", itemCompleteCount, " / ", items.length), /*#__PURE__*/React.createElement("span", null, "전체 응답 ", overall.judgedCells, " / ", totalCells)), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-2 rounded-full bg-slate-100 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-full bg-indigo-500 rounded-full transition-all",
+    style: {
+      width: `${totalCells ? overall.judgedCells / totalCells * 100 : 0}%`
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center gap-2"
+  }, /*#__PURE__*/React.createElement("select", {
+    className: inputCls + ' w-auto',
+    value: categoryFilter,
+    onChange: e => {
+      setCategoryFilter(e.target.value);
+      setCurrentIndex(0);
+    }
+  }, categories.map(c => /*#__PURE__*/React.createElement("option", {
+    key: c,
+    value: c
+  }, c))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: inputCls + ' w-40',
+    placeholder: "번호 또는 키워드 검색",
+    value: jumpSearch,
+    onChange: e => setJumpSearch(e.target.value),
+    onKeyDown: e => e.key === 'Enter' && jumpByNumber()
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: jumpByNumber,
+    className: btnGhost
+  }, /*#__PURE__*/React.createElement(Search, {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setCurrentIndex(i => Math.max(0, i - 1)),
+    disabled: currentIndex === 0,
+    className: btnSecondary
+  }, /*#__PURE__*/React.createElement(ChevronLeft, {
+    size: 14
+  }), " 이전"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-400 w-16 text-center"
+  }, currentIndex + 1, " / ", filteredItems.length), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setCurrentIndex(i => Math.min(filteredItems.length - 1, i + 1)),
+    disabled: currentIndex >= filteredItems.length - 1,
+    className: btnSecondary
+  }, "다음 ", /*#__PURE__*/React.createElement(ChevronRight, {
+    size: 14
+  }))), currentItem && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-xs font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5"
+  }, "Q", currentItem.no), /*#__PURE__*/React.createElement(CategoryPill, {
+    category: currentItem.category
+  }), currentItem.subCategory && /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500"
+  }, "· ", currentItem.subCategory)), /*#__PURE__*/React.createElement("p", {
+    className: "text-base text-slate-900 font-medium leading-relaxed"
+  }, currentItem.question), currentItem.context && /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 rounded-lg bg-slate-50 border border-slate-200 px-3 py-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-slate-600 mb-1"
+  }, "설명 / 기준"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-600 whitespace-pre-wrap leading-relaxed"
+  }, currentItem.context))), /*#__PURE__*/React.createElement(Card, {
+    className: "p-2 sm:p-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "divide-y divide-slate-100"
+  }, companies.map(c => {
+    const j = getJudgment(currentItem.id, c.id);
+    const info = scoreInfo(currentItem, j.optionKey);
+    const tier = tierOf(info ? info.pct : null);
+    const isExpanded = expandedCompanyId === c.id;
+    return /*#__PURE__*/React.createElement("div", {
+      key: c.id,
+      className: "py-2.5 px-2"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => setExpandedCompanyId(isExpanded ? null : c.id),
+      className: "w-full flex items-center gap-3 flex-wrap text-left"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-sm font-medium text-slate-800 w-28 shrink-0"
+    }, c.name), /*#__PURE__*/React.createElement("span", {
+      className: `inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold ${TIER_STYLE[tier].badge}`
+    }, j.optionKey ? info.pct !== null ? `${j.optionKey} · ${info.pct}%` : `${j.optionKey} · 해당없음` : '미응답'), (j.note || j.source) && /*#__PURE__*/React.createElement("span", {
+      className: "text-xs text-slate-400"
+    }, "근거 있음"), /*#__PURE__*/React.createElement(ChevronDown, {
+      size: 14,
+      className: `ml-auto text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`
+    })), isExpanded && /*#__PURE__*/React.createElement("div", {
+      className: "mt-2.5 space-y-2 bg-slate-50 rounded-lg p-3"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "space-y-1.5"
+    }, currentItem.options.map(opt => {
+      const selected = j.optionKey === opt.key;
+      return /*#__PURE__*/React.createElement("button", {
+        key: opt.key,
+        onClick: () => setJudgment(currentItem.id, c.id, {
+          optionKey: opt.key
+        }),
+        className: `w-full text-left rounded-lg border px-3 py-2 text-sm transition-colors ${selected ? 'border-indigo-500 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "font-mono font-semibold mr-2"
+      }, opt.key), opt.text);
+    }), j.optionKey && /*#__PURE__*/React.createElement("button", {
+      onClick: () => setJudgment(currentItem.id, c.id, {
+        optionKey: null
+      }),
+      className: "text-xs text-slate-400 hover:text-red-600"
+    }, "선택 해제")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+      className: "text-xs text-slate-500 mb-1 block"
+    }, "판정 근거"), /*#__PURE__*/React.createElement("textarea", {
+      className: inputCls + ' h-20 resize-y',
+      placeholder: "근거가 되는 증빙(정책 문서, 교육 기록, 인터뷰 등)을 기록하세요.",
+      value: j.note,
+      onChange: e => setJudgment(currentItem.id, c.id, {
+        note: e.target.value
+      })
+    })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+      className: "text-xs text-slate-500 mb-1 block"
+    }, "출처 / 증빙자료"), /*#__PURE__*/React.createElement("input", {
+      className: inputCls,
+      placeholder: "예: 2025 지속가능경영보고서 p.42, 취업규칙 제12조",
+      value: j.source,
+      onChange: e => setJudgment(currentItem.id, c.id, {
+        source: e.target.value
+      })
+    }))));
+  })))))), activeTab === 'results' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-5"
+  }, items.length === 0 ? /*#__PURE__*/React.createElement(Card, {
+    className: "p-8 text-center text-sm text-slate-400"
+  }, "문항이 없어 결과를 표시할 수 없습니다.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-end"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: exportExcel,
+    className: btnSecondary
+  }, /*#__PURE__*/React.createElement(Download, {
+    size: 14
+  }), " 엑셀로 내보내기")), /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900 mb-1"
+  }, "진단영역별 점수 요약 — 계열사 비교"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-3"
+  }, "프로세스 문항은 A~E 위치별 10·8·6·4·0점, 진단(성과) 문항은 A~C 위치별 4·2·0점(해당없음은 0점) 고정 배점 기준입니다."), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "text-left text-xs text-slate-400 border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "계열사"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "프로세스 (/360)"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "성과 (/640)"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "합계 (/1000)"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "5점 환산"))), /*#__PURE__*/React.createElement("tbody", null, allCompanyScores.slice().sort((a, b) => b.grand.diag - a.grand.diag).map(s => /*#__PURE__*/React.createElement("tr", {
+    key: s.id,
+    className: "border-b border-slate-100 last:border-0"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 font-medium text-slate-800"
+  }, s.name), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-slate-600"
+  }, s.process.diag.toFixed(1), " / ", s.process.max), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-slate-600"
+  }, s.performance.diag.toFixed(1), " / ", s.performance.max), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 font-semibold text-slate-800"
+  }, s.grand.diag.toFixed(1), " / ", s.grand.max), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-indigo-600 font-semibold"
+  }, s.grand.max ? (s.grand.diag / s.grand.max * 5).toFixed(1) : '-'))))))), /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between flex-wrap gap-2 mb-3"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900"
+  }, "계열사별 상세 채점표"), /*#__PURE__*/React.createElement("select", {
+    className: inputCls + ' w-auto',
+    value: scoreCompanyId || allCompanyScores[0]?.id || '',
+    onChange: e => setScoreCompanyId(e.target.value)
+  }, companies.map(c => /*#__PURE__*/React.createElement("option", {
+    key: c.id,
+    value: c.id
+  }, c.name)))), (() => {
+    const s = allCompanyScores.find(x => x.id === (scoreCompanyId || allCompanyScores[0]?.id));
+    if (!s) return null;
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "rounded-lg bg-slate-50 p-3"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-slate-500 mb-1"
+    }, "프로세스 진단점수"), /*#__PURE__*/React.createElement("p", {
+      className: "text-lg font-semibold text-slate-800"
+    }, s.process.diag.toFixed(1), " / ", s.process.max)), /*#__PURE__*/React.createElement("div", {
+      className: "rounded-lg bg-slate-50 p-3"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-slate-500 mb-1"
+    }, "성과 진단점수"), /*#__PURE__*/React.createElement("p", {
+      className: "text-lg font-semibold text-slate-800"
+    }, s.performance.diag.toFixed(1), " / ", s.performance.max)), /*#__PURE__*/React.createElement("div", {
+      className: "rounded-lg bg-slate-50 p-3"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-slate-500 mb-1"
+    }, "합계"), /*#__PURE__*/React.createElement("p", {
+      className: "text-lg font-semibold text-slate-800"
+    }, s.grand.diag.toFixed(1), " / ", s.grand.max)), /*#__PURE__*/React.createElement("div", {
+      className: "rounded-lg bg-indigo-50 p-3"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-indigo-500 mb-1"
+    }, "5점 환산"), /*#__PURE__*/React.createElement("p", {
+      className: "text-lg font-semibold text-indigo-700"
+    }, s.grand.max ? (s.grand.diag / s.grand.max * 5).toFixed(1) : '-'))), /*#__PURE__*/React.createElement("h3", {
+      className: "text-xs font-semibold text-slate-500 mb-2"
+    }, "프로세스 영역 (8단계)"), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-x-auto mb-5"
+    }, /*#__PURE__*/React.createElement("table", {
+      className: "w-full text-sm"
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+      className: "text-left text-xs text-slate-400 border-b border-slate-200"
+    }, /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium"
+    }, "단계"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "문항수"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "A"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "B"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "C"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "D"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "E"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium text-right"
+    }, "진단점수"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium text-right"
+    }, "총배점"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium text-right"
+    }, "5점만점"))), /*#__PURE__*/React.createElement("tbody", null, s.stages.map(row => /*#__PURE__*/React.createElement("tr", {
+      key: row.name,
+      className: "border-b border-slate-100 last:border-0"
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-slate-700"
+    }, row.name), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.itemCount), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.A), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.B), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.C), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.D), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.E), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right text-slate-700"
+    }, row.diagScore.toFixed(1)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right text-slate-500"
+    }, row.maxScore), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right font-semibold text-slate-700"
+    }, row.score5.toFixed(1)))), /*#__PURE__*/React.createElement("tr", {
+      className: "font-semibold text-slate-800 bg-slate-50"
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3"
+    }, "합계"), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.stages.reduce((a, r) => a + r.itemCount, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.stages.reduce((a, r) => a + r.counts.A, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.stages.reduce((a, r) => a + r.counts.B, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.stages.reduce((a, r) => a + r.counts.C, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.stages.reduce((a, r) => a + r.counts.D, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.stages.reduce((a, r) => a + r.counts.E, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right"
+    }, s.process.diag.toFixed(1)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right"
+    }, s.process.max), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right"
+    }, s.process.max ? (s.process.diag / s.process.max * 5).toFixed(1) : '-'))))), /*#__PURE__*/React.createElement("h3", {
+      className: "text-xs font-semibold text-slate-500 mb-2"
+    }, "성과(진단) 영역 — 핵심주제 7개"), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-x-auto"
+    }, /*#__PURE__*/React.createElement("table", {
+      className: "w-full text-sm"
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+      className: "text-left text-xs text-slate-400 border-b border-slate-200"
+    }, /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium"
+    }, "핵심주제"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "문항수"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "A"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "B"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "C"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-2 font-medium text-center"
+    }, "V"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium text-right"
+    }, "진단점수"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium text-right"
+    }, "총배점"), /*#__PURE__*/React.createElement("th", {
+      className: "py-1.5 pr-3 font-medium text-right"
+    }, "5점만점"))), /*#__PURE__*/React.createElement("tbody", null, s.topics.map(row => /*#__PURE__*/React.createElement("tr", {
+      key: row.name,
+      className: "border-b border-slate-100 last:border-0"
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-slate-700"
+    }, row.name), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.itemCount), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.A), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.B), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.C), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center text-slate-500"
+    }, row.counts.V), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right text-slate-700"
+    }, row.diagScore.toFixed(1)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right text-slate-500"
+    }, row.maxScore), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right font-semibold text-slate-700"
+    }, row.score5.toFixed(1)))), /*#__PURE__*/React.createElement("tr", {
+      className: "font-semibold text-slate-800 bg-slate-50"
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3"
+    }, "합계"), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.topics.reduce((a, r) => a + r.itemCount, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.topics.reduce((a, r) => a + r.counts.A, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.topics.reduce((a, r) => a + r.counts.B, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.topics.reduce((a, r) => a + r.counts.C, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-2 text-center"
+    }, s.topics.reduce((a, r) => a + r.counts.V, 0)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right"
+    }, s.performance.diag.toFixed(1)), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right"
+    }, s.performance.max), /*#__PURE__*/React.createElement("td", {
+      className: "py-1.5 pr-3 text-right"
+    }, s.performance.max ? (s.performance.diag / s.performance.max * 5).toFixed(1) : '-'))))));
+  })()), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 sm:grid-cols-4 gap-3"
+  }, /*#__PURE__*/React.createElement(Card, {
+    className: "p-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-1"
+  }, "전체 진행률"), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-semibold text-slate-900"
+  }, totalCells ? Math.round(overall.judgedCells / totalCells * 100) : 0, "%"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400 mt-0.5"
+  }, overall.judgedCells, " / ", totalCells)), /*#__PURE__*/React.createElement(Card, {
+    className: "p-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-1"
+  }, "평균 충족도"), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-semibold text-indigo-600"
+  }, overall.avgPct === null ? '-' : `${overall.avgPct}%`)), /*#__PURE__*/React.createElement(Card, {
+    className: "p-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-1"
+  }, "취약 응답 (50% 미만)"), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-semibold text-red-600"
+  }, overall.lowCount)), /*#__PURE__*/React.createElement(Card, {
+    className: "p-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-1"
+  }, "미응답"), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-semibold text-slate-400"
+  }, totalCells - overall.judgedCells))), /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900 mb-3"
+  }, "계열사별 현황"), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "text-left text-xs text-slate-400 border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "계열사"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "응답"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "평균 충족도"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "취약 응답"))), /*#__PURE__*/React.createElement("tbody", null, companySummary.map(row => /*#__PURE__*/React.createElement("tr", {
+    key: row.id,
+    className: "border-b border-slate-100 last:border-0"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 font-medium text-slate-800"
+  }, row.name), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-slate-500"
+  }, row.judgedCount, " / ", row.total), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3"
+  }, row.avg === null ? /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-300"
+  }, "-") : /*#__PURE__*/React.createElement("span", {
+    className: row.avg < 50 ? 'text-red-600 font-semibold' : 'text-slate-700'
+  }, row.avg, "%")), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-red-600"
+  }, row.lowCount || /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-300"
+  }, "0")))))))), /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900 mb-1"
+  }, "카테고리별 현황"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-3"
+  }, "평균 충족도가 낮은 순으로 정렬됩니다."), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "text-left text-xs text-slate-400 border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "카테고리"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "문항수"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "응답수"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-3 font-medium"
+  }, "평균 충족도"))), /*#__PURE__*/React.createElement("tbody", null, categorySummary.map(row => /*#__PURE__*/React.createElement("tr", {
+    key: row.category,
+    className: "border-b border-slate-100 last:border-0"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3"
+  }, /*#__PURE__*/React.createElement(CategoryPill, {
+    category: row.category
+  })), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-slate-600"
+  }, row.itemCount), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3 text-slate-500"
+  }, row.judgedCount), /*#__PURE__*/React.createElement("td", {
+    className: "py-2 pr-3"
+  }, row.avg === null ? /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-300"
+  }, "-") : /*#__PURE__*/React.createElement("span", {
+    className: row.avg < 50 ? 'text-red-600 font-semibold' : 'text-slate-700'
+  }, row.avg, "%")))))))), /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-3"
+  }, /*#__PURE__*/React.createElement(AlertTriangle, {
+    size: 16,
+    className: "text-red-500"
+  }), /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900"
+  }, "취약 응답 목록 (", weakList.length, "건, 충족도 50% 미만)")), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-2 mb-3"
+  }, /*#__PURE__*/React.createElement("select", {
+    className: inputCls + ' w-auto',
+    value: resultCompanyFilter,
+    onChange: e => setResultCompanyFilter(e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "전체"
+  }, "전체 계열사"), companies.map(c => /*#__PURE__*/React.createElement("option", {
+    key: c.id,
+    value: c.id
+  }, c.name))), /*#__PURE__*/React.createElement("select", {
+    className: inputCls + ' w-auto',
+    value: resultCategoryFilter,
+    onChange: e => setResultCategoryFilter(e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "전체"
+  }, "전체 카테고리"), categories.filter(c => c !== '전체').map(c => /*#__PURE__*/React.createElement("option", {
+    key: c,
+    value: c
+  }, c)))), weakList.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-slate-400 py-4 text-center"
+  }, "해당 조건에 취약 응답이 없습니다.") : /*#__PURE__*/React.createElement("div", {
+    className: "max-h-96 overflow-y-auto space-y-2"
+  }, weakList.map((r, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "rounded-lg border border-red-100 bg-red-50/50 p-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start justify-between gap-2"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-xs text-slate-500"
+  }, "Q", r.itemNo), /*#__PURE__*/React.createElement(CategoryPill, {
+    category: r.category
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-slate-700"
+  }, r.companyName), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-red-600"
+  }, r.optionKey, " · ", r.pct, "%")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-slate-800"
+  }, r.question), r.optionText && /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, "선택 보기: ", r.optionText), r.note && /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-0.5"
+  }, "근거: ", r.note)), /*#__PURE__*/React.createElement("button", {
+    onClick: () => jumpToItem(r.itemId, r.companyId),
+    className: btnGhost + ' shrink-0'
+  }, "이동 ", /*#__PURE__*/React.createElement(ArrowRight, {
+    size: 13
+  }))))))))));
 }
-
-
-ReactDOM.createRoot(document.getElementById('root')).render(<HRDiagnosisTool />);
-
+ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(HRDiagnosisTool, null));
 </script>
 </body>
 </html>
