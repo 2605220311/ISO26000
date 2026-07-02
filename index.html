@@ -2443,7 +2443,8 @@ function HRDiagnosisTool() {
             optionKey: row.option_key,
             note: row.note || '',
             source: row.source || '',
-            updatedAt: row.updated_at
+            updatedAt: row.updated_at,
+            reviewStatus: row.review_status || 'complete'
           };
         });
         setJudgments(map);
@@ -2463,7 +2464,8 @@ function HRDiagnosisTool() {
       option_key: data.optionKey,
       note: data.note || '',
       source: data.source || '',
-      updated_at: data.updatedAt
+      updated_at: data.updatedAt,
+      review_status: data.reviewStatus || 'complete'
     }, 'item_id,company_id');
     if (error) {
       console.error('저장 실패:', error);
@@ -2489,7 +2491,8 @@ function HRDiagnosisTool() {
   const getJudgment = useCallback((itemId, companyId) => judgments[`${itemId}::${companyId}`] || {
     optionKey: null,
     note: '',
-    source: ''
+    source: '',
+    reviewStatus: 'complete'
   }, [judgments]);
   const setJudgment = useCallback((itemId, companyId, patch) => {
     const key = `${itemId}::${companyId}`;
@@ -2497,7 +2500,8 @@ function HRDiagnosisTool() {
       const current = prev[key] || {
         optionKey: null,
         note: '',
-        source: ''
+        source: '',
+        reviewStatus: 'complete'
       };
       const next = {
         ...current,
@@ -2627,6 +2631,32 @@ function HRDiagnosisTool() {
     return rows.filter(r => (resultCompanyFilter === '전체' || r.companyId === resultCompanyFilter) && (resultCategoryFilter === '전체' || catLabel(r.category) === resultCategoryFilter));
   }, [items, companies, getJudgment, resultCompanyFilter, resultCategoryFilter]);
 
+  // 보류(응답은 했지만 확정 안 됨) + 미응답을 하나로 모은 "확인 필요" 목록
+  const reviewNeededList = useMemo(() => {
+    const rows = [];
+    items.forEach(it => companies.forEach(c => {
+      const j = getJudgment(it.id, c.id);
+      const isPending = !j.optionKey;
+      const isHold = j.optionKey && j.reviewStatus === 'hold';
+      if (isPending || isHold) {
+        rows.push({
+          itemId: it.id,
+          itemNo: it.no,
+          category: it.category,
+          subCategory: it.subCategory,
+          question: it.question,
+          companyId: c.id,
+          companyName: c.name,
+          status: isHold ? 'hold' : 'pending',
+          optionKey: j.optionKey,
+          note: j.note,
+          source: j.source
+        });
+      }
+    }));
+    return rows.filter(r => (resultCompanyFilter === '전체' || r.companyId === resultCompanyFilter) && (resultCategoryFilter === '전체' || catLabel(r.category) === resultCategoryFilter));
+  }, [items, companies, getJudgment, resultCompanyFilter, resultCategoryFilter]);
+
   /* ---------------- 공식 채점 로직 (프로세스 8단계 / 성과 7개 핵심주제) ---------------- */
   const computeCompanyOfficialScore = useCallback(companyId => {
     const stages = PROCESS_STAGES.map(stage => {
@@ -2727,14 +2757,15 @@ function HRDiagnosisTool() {
     }, 0);
   };
   const exportExcel = () => {
-    const header = ['번호', '카테고리', '소분류', '문항', '계열사', '선택보기', '보기내용', '충족도(%)', '근거', '출처'];
+    const header = ['번호', '카테고리', '소분류', '문항', '계열사', '확정여부', '선택보기', '보기내용', '충족도(%)', '근거', '출처'];
     const rows = [header];
     items.forEach(it => companies.forEach(c => {
       const j = getJudgment(it.id, c.id);
       const info = scoreInfo(it, j.optionKey);
       let pctCell = '';
       if (info) pctCell = info.pct === null ? '해당없음' : info.pct;
-      rows.push([it.no, catLabel(it.category), it.subCategory || '', it.question, c.name, j.optionKey || '', info ? info.opt.text : '', pctCell, j.note || '', j.source || '']);
+      const statusCell = !j.optionKey ? '미응답' : j.reviewStatus === 'hold' ? '보류' : '평가완료';
+      rows.push([it.no, catLabel(it.category), it.subCategory || '', it.question, c.name, statusCell, j.optionKey || '', info ? info.opt.text : '', pctCell, j.note || '', j.source || '']);
     }));
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [{
@@ -2747,6 +2778,8 @@ function HRDiagnosisTool() {
       wch: 45
     }, {
       wch: 14
+    }, {
+      wch: 10
     }, {
       wch: 8
     }, {
@@ -2917,19 +2950,38 @@ function HRDiagnosisTool() {
     return /*#__PURE__*/React.createElement("div", {
       key: c.id,
       className: "py-2.5 px-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "w-full flex items-center gap-2 flex-wrap"
     }, /*#__PURE__*/React.createElement("button", {
       onClick: () => setExpandedCompanyId(isExpanded ? null : c.id),
-      className: "w-full flex items-center gap-3 flex-wrap text-left"
+      className: "flex items-center gap-2 flex-wrap text-left flex-1 min-w-0"
     }, /*#__PURE__*/React.createElement("span", {
       className: "text-sm font-medium text-slate-800 w-28 shrink-0"
     }, c.name), /*#__PURE__*/React.createElement("span", {
       className: `inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold ${TIER_STYLE[tier].badge}`
-    }, j.optionKey ? info.pct !== null ? `${j.optionKey} · ${info.pct}%` : `${j.optionKey} · 해당없음` : '미응답'), (j.note || j.source) && /*#__PURE__*/React.createElement("span", {
+    }, j.optionKey ? info.pct !== null ? `${j.optionKey} · ${info.pct}%` : `${j.optionKey} · 해당없음` : '미응답'), j.optionKey && j.reviewStatus === 'hold' && /*#__PURE__*/React.createElement("span", {
+      className: "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700"
+    }, "보류"), (j.note || j.source) && /*#__PURE__*/React.createElement("span", {
       className: "text-xs text-slate-400"
-    }, "근거 있음"), /*#__PURE__*/React.createElement(ChevronDown, {
+    }, "근거 있음")), j.optionKey && /*#__PURE__*/React.createElement("div", {
+      className: "flex gap-1 shrink-0"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => setJudgment(currentItem.id, c.id, {
+        reviewStatus: 'complete'
+      }),
+      className: `text-xs px-2 py-1 rounded-md border font-medium transition-colors ${(j.reviewStatus || 'complete') === 'complete' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-500 border-slate-300 hover:bg-slate-50'}`
+    }, "평가완료"), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setJudgment(currentItem.id, c.id, {
+        reviewStatus: 'hold'
+      }),
+      className: `text-xs px-2 py-1 rounded-md border font-medium transition-colors ${j.reviewStatus === 'hold' ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-slate-500 border-slate-300 hover:bg-slate-50'}`
+    }, "보류")), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setExpandedCompanyId(isExpanded ? null : c.id),
+      className: "shrink-0"
+    }, /*#__PURE__*/React.createElement(ChevronDown, {
       size: 14,
-      className: `ml-auto text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`
-    })), isExpanded && /*#__PURE__*/React.createElement("div", {
+      className: `text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`
+    }))), isExpanded && /*#__PURE__*/React.createElement("div", {
       className: "mt-2.5 space-y-2 bg-slate-50 rounded-lg p-3"
     }, /*#__PURE__*/React.createElement("div", {
       className: "space-y-1.5"
@@ -2938,7 +2990,8 @@ function HRDiagnosisTool() {
       return /*#__PURE__*/React.createElement("button", {
         key: opt.key,
         onClick: () => setJudgment(currentItem.id, c.id, {
-          optionKey: opt.key
+          optionKey: opt.key,
+          reviewStatus: 'complete'
         }),
         className: `w-full text-left rounded-lg border px-3 py-2 text-sm transition-colors ${selected ? 'border-indigo-500 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`
       }, /*#__PURE__*/React.createElement("span", {
@@ -2946,7 +2999,8 @@ function HRDiagnosisTool() {
       }, opt.key), opt.text);
     }), j.optionKey && /*#__PURE__*/React.createElement("button", {
       onClick: () => setJudgment(currentItem.id, c.id, {
-        optionKey: null
+        optionKey: null,
+        reviewStatus: 'complete'
       }),
       className: "text-xs text-slate-400 hover:text-red-600"
     }, "선택 해제")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
@@ -3302,6 +3356,65 @@ function HRDiagnosisTool() {
   }, "-") : /*#__PURE__*/React.createElement("span", {
     className: row.avg < 50 ? 'text-red-600 font-semibold' : 'text-slate-700'
   }, row.avg, "%")))))))), /*#__PURE__*/React.createElement(Card, {
+    className: "p-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-3"
+  }, /*#__PURE__*/React.createElement(AlertTriangle, {
+    size: 16,
+    className: "text-amber-500"
+  }), /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900"
+  }, "확인 필요 목록 (", reviewNeededList.length, "건, 보류 · 미응답)")), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-2 mb-3"
+  }, /*#__PURE__*/React.createElement("select", {
+    className: inputCls + ' w-auto',
+    value: resultCompanyFilter,
+    onChange: e => setResultCompanyFilter(e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "전체"
+  }, "전체 계열사"), companies.map(c => /*#__PURE__*/React.createElement("option", {
+    key: c.id,
+    value: c.id
+  }, c.name))), /*#__PURE__*/React.createElement("select", {
+    className: inputCls + ' w-auto',
+    value: resultCategoryFilter,
+    onChange: e => setResultCategoryFilter(e.target.value)
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "전체"
+  }, "전체 카테고리"), categories.filter(c => c !== '전체').map(c => /*#__PURE__*/React.createElement("option", {
+    key: c,
+    value: c
+  }, c)))), reviewNeededList.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-slate-400 py-4 text-center"
+  }, "해당 조건에 보류·미응답 항목이 없습니다.") : /*#__PURE__*/React.createElement("div", {
+    className: "max-h-96 overflow-y-auto space-y-2"
+  }, reviewNeededList.map((r, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: `rounded-lg border p-3 ${r.status === 'hold' ? 'border-amber-200 bg-amber-50/50' : 'border-slate-200 bg-slate-50'}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start justify-between gap-2"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-xs text-slate-500"
+  }, "Q", r.itemNo), /*#__PURE__*/React.createElement(CategoryPill, {
+    category: r.category
+  }), r.subCategory && /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-500"
+  }, "· ", r.subCategory), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-slate-700"
+  }, r.companyName), /*#__PURE__*/React.createElement("span", {
+    className: `text-xs font-semibold rounded px-1.5 py-0.5 ${r.status === 'hold' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-600'}`
+  }, r.status === 'hold' ? '보류' : '미응답')), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-slate-800"
+  }, r.question), r.note && /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, "근거: ", r.note)), /*#__PURE__*/React.createElement("button", {
+    onClick: () => jumpToItem(r.itemId, r.companyId),
+    className: btnGhost + ' shrink-0'
+  }, "이동 ", /*#__PURE__*/React.createElement(ArrowRight, {
+    size: 13
+  }))))))), /*#__PURE__*/React.createElement(Card, {
     className: "p-5"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-2 mb-3"
