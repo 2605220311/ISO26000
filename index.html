@@ -9,7 +9,6 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   body { margin: 0; background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif; }
   #root { padding: 24px 16px; }
@@ -107,11 +106,34 @@ function Save(props) {
 
 const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
-// Supabase 클라이언트 생성 (URL/키는 공개용 값이라 코드에 직접 넣어도 안전합니다)
-const supabaseClient = supabase.createClient(
-  'https://xolhocotldtienifaikq.supabase.co',
-  'sb_publishable_iXFv0NA8GlT82jBXwUnp1w_PetKN5QC'
-);
+// Supabase 접속 정보 (URL/키는 공개용 값이라 코드에 직접 넣어도 안전합니다)
+const SUPABASE_URL = 'https://xolhocotldtienifaikq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_iXFv0NA8GlT82jBXwUnp1w_PetKN5QC';
+
+// supabase-js 라이브러리 없이, 브라우저 기본 fetch로 Supabase REST API(PostgREST)를 직접 호출.
+// CDN 라이브러리 로딩 문제를 완전히 피하기 위한 방식입니다.
+async function sbSelectAll(table) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+  });
+  if (!res.ok) return { data: null, error: await res.text() };
+  return { data: await res.json(), error: null };
+}
+
+async function sbUpsert(table, row, onConflictCols) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?on_conflict=${onConflictCols}`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'resolution=merge-duplicates,return=minimal',
+    },
+    body: JSON.stringify(row),
+  });
+  if (!res.ok) return { error: await res.text() };
+  return { error: null };
+}
 
 /* ================================================================ */
 /* constants                                                         */
@@ -2277,7 +2299,7 @@ function HRDiagnosisTool() {
   // 문항·계열사는 소스 코드에 고정되어 있어(ITEMS_TEXT / DEFAULT_COMPANIES) 별도 로딩이 필요 없음.
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabaseClient.from('judgments').select('*');
+      const { data, error } = await sbSelectAll('judgments');
       if (error) {
         console.error('불러오기 실패:', error);
       } else if (data) {
@@ -2299,7 +2321,8 @@ function HRDiagnosisTool() {
   // 문항+계열사 셀 하나 단위로 디바운스 후 Supabase에 upsert (관계형 저장이라 통짜 blob 대신 행 단위 저장)
   const saveJudgmentRow = useCallback(async (itemId, companyId, data) => {
     setSaveStatus('saving');
-    const { error } = await supabaseClient.from('judgments').upsert(
+    const { error } = await sbUpsert(
+      'judgments',
       {
         item_id: itemId,
         company_id: companyId,
@@ -2308,7 +2331,7 @@ function HRDiagnosisTool() {
         source: data.source || '',
         updated_at: data.updatedAt,
       },
-      { onConflict: 'item_id,company_id' }
+      'item_id,company_id'
     );
     if (error) {
       console.error('저장 실패:', error);
