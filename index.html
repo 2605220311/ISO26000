@@ -2410,6 +2410,20 @@ function HRDiagnosisTool() {
   const [resultCompanyFilter, setResultCompanyFilter] = useState('전체');
   const [scoreCompanyId, setScoreCompanyId] = useState('');
   const [resultCategoryFilter, setResultCategoryFilter] = useState('전체');
+
+  // 판정 근거 textarea 크기 — 한 번 늘리면 그 크기가 계속 유지되도록 브라우저에 저장
+  const [noteHeight, setNoteHeight] = useState(() => {
+    const saved = Number(localStorage.getItem('hrdiag_note_height'));
+    return saved && saved >= 60 ? saved : 140;
+  });
+  const handleNoteResize = useCallback(e => {
+    const h = e.target.offsetHeight;
+    setNoteHeight(prev => {
+      if (h === prev) return prev;
+      localStorage.setItem('hrdiag_note_height', String(h));
+      return h;
+    });
+  }, []);
   const saveTimers = useRef({});
 
   // 마운트 시: Supabase judgments 테이블에서 전체 판정 데이터를 불러옴.
@@ -2938,12 +2952,16 @@ function HRDiagnosisTool() {
     }, "선택 해제")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
       className: "text-xs text-slate-500 mb-1 block"
     }, "판정 근거"), /*#__PURE__*/React.createElement("textarea", {
-      className: inputCls + ' h-20 resize-y',
+      className: inputCls + ' resize-y',
+      style: {
+        height: noteHeight + 'px'
+      },
       placeholder: "근거가 되는 증빙(정책 문서, 교육 기록, 인터뷰 등)을 기록하세요.",
       value: j.note,
       onChange: e => setJudgment(currentItem.id, c.id, {
         note: e.target.value
-      })
+      }),
+      onMouseUp: handleNoteResize
     })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
       className: "text-xs text-slate-500 mb-1 block"
     }, "출처 / 증빙자료"), /*#__PURE__*/React.createElement("input", {
