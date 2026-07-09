@@ -2553,7 +2553,7 @@ function HRDiagnosisTool() {
         const map = {};
         data.forEach(row => {
           map[`${row.item_id}::${row.company_id}`] = {
-            optionKey: row.option_key,
+            optionKey: row.option_key || null,
             note: row.note || '',
             source: row.source || '',
             memo: row.memo || '',
@@ -2576,7 +2576,7 @@ function HRDiagnosisTool() {
     } = await sbUpsert('judgments', {
       item_id: itemId,
       company_id: companyId,
-      option_key: data.optionKey,
+      option_key: data.optionKey || '',
       note: data.note || '',
       source: data.source || '',
       memo: data.memo || '',
@@ -2622,7 +2622,7 @@ function HRDiagnosisTool() {
       } = await sbUpsert('judgments', {
         item_id: itemId,
         company_id: companyId,
-        option_key: data.optionKey,
+        option_key: data.optionKey || '',
         note: data.note || '',
         source: data.source || '',
         memo: data.memo || '',
