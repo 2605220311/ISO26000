@@ -192,18 +192,28 @@ const SUPABASE_KEY = 'sb_publishable_iXFv0NA8GlT82jBXwUnp1w_PetKN5QC';
 // supabase-js 라이브러리 없이, 브라우저 기본 fetch로 Supabase REST API(PostgREST)를 직접 호출.
 // CDN 라이브러리 로딩 문제를 완전히 피하기 위한 방식입니다.
 async function sbSelectAll(table) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
-    }
-  });
-  if (!res.ok) return {
-    data: null,
-    error: await res.text()
-  };
+  // Supabase는 한 번에 최대 1000건만 반환하므로 1000건씩 나눠서 전부 불러옴
+  const pageSize = 1000;
+  let all = [];
+  let offset = 0;
+  while (true) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=item_id.asc,company_id.asc&limit=${pageSize}&offset=${offset}`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if (!res.ok) return {
+      data: null,
+      error: await res.text()
+    };
+    const page = await res.json();
+    all = all.concat(page);
+    if (page.length < pageSize) break;
+    offset += pageSize;
+  }
   return {
-    data: await res.json(),
+    data: all,
     error: null
   };
 }
@@ -2494,6 +2504,7 @@ function HRDiagnosisTool() {
   const items = useMemo(() => parseItemsBlockText(ITEMS_TEXT, []).parsed, []);
   const [judgments, setJudgments] = useState({});
   const [saveStatus, setSaveStatus] = useState('idle');
+  const [saveErrorDetail, setSaveErrorDetail] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedCompanyId, setExpandedCompanyId] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('전체');
@@ -2586,9 +2597,11 @@ function HRDiagnosisTool() {
     if (error) {
       // 실패 시 dirty 상태를 유지해서 수동 저장 버튼으로 재시도 가능하게 함
       console.error('저장 실패:', error);
+      setSaveErrorDetail(String(error).slice(0, 300));
       setSaveStatus('error');
       return false;
     }
+    setSaveErrorDetail('');
     dirtyKeys.current.delete(key);
     setDirtyCount(dirtyKeys.current.size);
     setSaveStatus('saved');
@@ -2632,6 +2645,7 @@ function HRDiagnosisTool() {
       if (error) {
         failed++;
         console.error('저장 실패:', key, error);
+        setSaveErrorDetail(String(error).slice(0, 300));
       } else {
         dirtyKeys.current.delete(key);
       }
@@ -2640,6 +2654,7 @@ function HRDiagnosisTool() {
     if (failed > 0) {
       setSaveStatus('error');
     } else {
+      setSaveErrorDetail('');
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus('idle'), 1200);
     }
@@ -3146,7 +3161,9 @@ function HRDiagnosisTool() {
     className: `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${dirtyCount > 0 ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'} disabled:opacity-50`
   }, /*#__PURE__*/React.createElement(Save, {
     size: 13
-  }), dirtyCount > 0 ? `저장 (${dirtyCount})` : '저장'))), importOpen && /*#__PURE__*/React.createElement("div", {
+  }), dirtyCount > 0 ? `저장 (${dirtyCount})` : '저장'))), saveStatus === 'error' && saveErrorDetail && /*#__PURE__*/React.createElement("div", {
+    className: "mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 break-all"
+  }, /*#__PURE__*/React.createElement("b", null, "서버 오류: "), saveErrorDetail), importOpen && /*#__PURE__*/React.createElement("div", {
     className: "fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4",
     onClick: () => setImportOpen(false)
   }, /*#__PURE__*/React.createElement("div", {
