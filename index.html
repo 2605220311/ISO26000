@@ -144,6 +144,39 @@ function Save(props) {
     points: "7 3 7 8 15 8"
   }));
 }
+function Trash2(props) {
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("polyline", {
+    points: "3 6 5 6 21 6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "10",
+    y1: "11",
+    x2: "10",
+    y2: "17"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "14",
+    y1: "11",
+    x2: "14",
+    y2: "17"
+  }));
+}
+function ClipboardPaste(props) {
+  return /*#__PURE__*/React.createElement(Icon, props, /*#__PURE__*/React.createElement("rect", {
+    x: "8",
+    y: "2",
+    width: "8",
+    height: "4",
+    rx: "1",
+    ry: "1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 11v6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m9 14 3 3 3-3"
+  }));
+}
 const {
   useState,
   useEffect,
@@ -191,6 +224,64 @@ async function sbUpsert(table, row, onConflictCols) {
   return {
     error: null
   };
+}
+
+// 테이블 전체 행 삭제 (데이터 초기화용)
+async function sbDeleteAll(table) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?item_id=not.is.null`, {
+    method: 'DELETE',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  if (!res.ok) return {
+    error: await res.text()
+  };
+  return {
+    error: null
+  };
+}
+
+// 엑셀에서 복사(Ctrl+C)한 내용 파싱: 탭 구분, 줄바꿈 포함 셀은 큰따옴표로 감싸져 옴
+function parseTsvClipboard(text) {
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let inQuotes = false;
+  const s = String(text).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (s[i + 1] === '"') {
+          cell += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        cell += ch;
+      }
+    } else if (ch === '"' && cell === '') {
+      inQuotes = true;
+    } else if (ch === '\t') {
+      row.push(cell);
+      cell = '';
+    } else if (ch === '\n') {
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+    } else {
+      cell += ch;
+    }
+  }
+  if (cell !== '' || row.length) {
+    row.push(cell);
+    rows.push(row);
+  }
+  return rows;
 }
 
 /* ================================================================ */
@@ -2426,6 +2517,28 @@ function HRDiagnosisTool() {
   }, []);
   const saveTimers = useRef({});
 
+  // 최신 judgments를 항상 참조할 수 있게 ref로 미러링 (수동 저장 시 사용)
+  const judgmentsRef = useRef(judgments);
+  useEffect(() => {
+    judgmentsRef.current = judgments;
+  }, [judgments]);
+
+  // 아직 서버에 저장되지 않은(수정 후 저장 대기/실패) 셀 목록
+  const dirtyKeys = useRef(new Map()); // key -> { itemId, companyId }
+  const [dirtyCount, setDirtyCount] = useState(0);
+
+  // 저장 안 된 변경이 있을 때 창을 닫으면 경고
+  useEffect(() => {
+    const handler = e => {
+      if (dirtyKeys.current.size > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, []);
+
   // 마운트 시: Supabase judgments 테이블에서 전체 판정 데이터를 불러옴.
   // 문항·계열사는 소스 코드에 고정되어 있어(ITEMS_TEXT / DEFAULT_COMPANIES) 별도 로딩이 필요 없음.
   useEffect(() => {
@@ -2456,6 +2569,7 @@ function HRDiagnosisTool() {
 
   // 문항+계열사 셀 하나 단위로 디바운스 후 Supabase에 upsert (관계형 저장이라 통짜 blob 대신 행 단위 저장)
   const saveJudgmentRow = useCallback(async (itemId, companyId, data) => {
+    const key = `${itemId}::${companyId}`;
     setSaveStatus('saving');
     const {
       error
@@ -2470,12 +2584,176 @@ function HRDiagnosisTool() {
       review_status: data.reviewStatus || 'complete'
     }, 'item_id,company_id');
     if (error) {
+      // 실패 시 dirty 상태를 유지해서 수동 저장 버튼으로 재시도 가능하게 함
       console.error('저장 실패:', error);
-      setSaveStatus('idle');
-      return;
+      setSaveStatus('error');
+      return false;
     }
+    dirtyKeys.current.delete(key);
+    setDirtyCount(dirtyKeys.current.size);
     setSaveStatus('saved');
     setTimeout(() => setSaveStatus('idle'), 1200);
+    return true;
+  }, []);
+
+  // 수동 저장: 대기 중인 자동저장 타이머를 전부 취소하고, 저장 안 된 셀을 즉시 일괄 저장
+  const saveAllNow = useCallback(async () => {
+    Object.values(saveTimers.current).forEach(t => clearTimeout(t));
+    saveTimers.current = {};
+    const entries = Array.from(dirtyKeys.current.entries());
+    if (entries.length === 0) {
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 1200);
+      return;
+    }
+    setSaveStatus('saving');
+    let failed = 0;
+    for (const [key, {
+      itemId,
+      companyId
+    }] of entries) {
+      const data = judgmentsRef.current[key];
+      if (!data) {
+        dirtyKeys.current.delete(key);
+        continue;
+      }
+      const {
+        error
+      } = await sbUpsert('judgments', {
+        item_id: itemId,
+        company_id: companyId,
+        option_key: data.optionKey,
+        note: data.note || '',
+        source: data.source || '',
+        memo: data.memo || '',
+        updated_at: data.updatedAt,
+        review_status: data.reviewStatus || 'complete'
+      }, 'item_id,company_id');
+      if (error) {
+        failed++;
+        console.error('저장 실패:', key, error);
+      } else {
+        dirtyKeys.current.delete(key);
+      }
+    }
+    setDirtyCount(dirtyKeys.current.size);
+    if (failed > 0) {
+      setSaveStatus('error');
+    } else {
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 1200);
+    }
+  }, []);
+
+  // ---------- 엑셀 붙여넣기 복원 ----------
+  const [importOpen, setImportOpen] = useState(false);
+  const [importText, setImportText] = useState('');
+  const [importMsg, setImportMsg] = useState('');
+  const applyImport = useCallback(() => {
+    const rows = parseTsvClipboard(importText).filter(r => r.some(c => String(c).trim() !== ''));
+    if (!rows.length) {
+      setImportMsg('붙여넣은 내용이 없습니다.');
+      return;
+    }
+    // 헤더 행이 포함돼 있으면 제거
+    let dataRows = rows;
+    if (String(rows[0][0]).trim() === '번호') dataRows = rows.slice(1);
+
+    // 문항 매칭: ① 카테고리+번호 → ② 문항 텍스트
+    const itemByNoCat = {};
+    const itemByQuestion = {};
+    items.forEach(it => {
+      itemByNoCat[`${catLabel(it.category)}::${String(it.no).trim()}`] = it;
+      itemByQuestion[String(it.question).trim()] = it;
+    });
+    const companyByName = {};
+    companies.forEach(c => {
+      companyByName[c.name.trim()] = c;
+    });
+    let applied = 0,
+      skippedEmpty = 0,
+      unmatched = 0;
+    const patches = [];
+    dataRows.forEach(r => {
+      const v = i => r[i] == null ? '' : String(r[i]);
+      // 열 순서: 번호, 카테고리, 소분류, 문항, 계열사, 확정여부, 선택보기, 보기내용, 충족도, 근거, 출처, 메모
+      const it = itemByNoCat[`${v(1).trim()}::${v(0).trim()}`] || itemByQuestion[v(3).trim()];
+      const comp = companyByName[v(4).trim()];
+      if (!it || !comp) {
+        unmatched++;
+        return;
+      }
+      const optionKey = v(6).trim();
+      const note = v(9),
+        source = v(10),
+        memo = v(11);
+      if (!optionKey && !note.trim() && !source.trim() && !memo.trim()) {
+        skippedEmpty++;
+        return;
+      }
+      patches.push({
+        itemId: it.id,
+        companyId: comp.id,
+        data: {
+          optionKey: optionKey || null,
+          note,
+          source,
+          memo,
+          reviewStatus: v(5).trim() === '보류' ? 'hold' : 'complete',
+          updatedAt: new Date().toISOString()
+        }
+      });
+      applied++;
+    });
+    if (!applied) {
+      setImportMsg(`복원할 데이터가 없습니다. (매칭 실패 ${unmatched}건, 빈 응답 ${skippedEmpty}건 제외)`);
+      return;
+    }
+    setJudgments(prev => {
+      const next = {
+        ...prev
+      };
+      patches.forEach(p => {
+        const key = `${p.itemId}::${p.companyId}`;
+        next[key] = p.data;
+        dirtyKeys.current.set(key, {
+          itemId: p.itemId,
+          companyId: p.companyId
+        });
+      });
+      return next;
+    });
+    setDirtyCount(dirtyKeys.current.size);
+    setImportMsg(`${applied}건을 불러와서 서버에 저장하는 중입니다...` + (unmatched ? ` (매칭 실패 ${unmatched}건 제외)` : ''));
+    // judgmentsRef가 갱신된 뒤 일괄 저장
+    setTimeout(() => {
+      saveAllNow();
+      setImportOpen(false);
+      setImportText('');
+      setImportMsg('');
+    }, 150);
+  }, [importText, items, companies, saveAllNow]);
+
+  // ---------- 데이터 초기화 ----------
+  const resetAll = useCallback(async () => {
+    const typed = window.prompt('⚠️ 모든 판정 데이터가 서버에서 삭제되며 되돌릴 수 없습니다.\n초기화 전에 엑셀로 내보내기를 먼저 해두는 것을 권장합니다.\n\n계속하려면 "초기화"라고 입력하세요.');
+    if (typed !== '초기화') return;
+    setSaveStatus('saving');
+    const {
+      error
+    } = await sbDeleteAll('judgments');
+    if (error) {
+      console.error('초기화 실패:', error);
+      setSaveStatus('error');
+      window.alert('초기화에 실패했습니다. 네트워크 상태를 확인한 뒤 다시 시도해주세요.');
+      return;
+    }
+    Object.values(saveTimers.current).forEach(t => clearTimeout(t));
+    saveTimers.current = {};
+    dirtyKeys.current.clear();
+    setDirtyCount(0);
+    setJudgments({});
+    setSaveStatus('idle');
   }, []);
   const categories = useMemo(() => {
     const set = new Set(items.map(it => catLabel(it.category)));
@@ -2499,6 +2777,11 @@ function HRDiagnosisTool() {
   }, [judgments]);
   const setJudgment = useCallback((itemId, companyId, patch) => {
     const key = `${itemId}::${companyId}`;
+    dirtyKeys.current.set(key, {
+      itemId,
+      companyId
+    });
+    setDirtyCount(dirtyKeys.current.size);
     setJudgments(prev => {
       const current = prev[key] || {
         optionKey: null,
@@ -2848,14 +3131,52 @@ function HRDiagnosisTool() {
     className: "text-lg font-semibold text-slate-900"
   }, "그룹사 기업의 사회적 책임 국제표준 가이드라인 진단"), /*#__PURE__*/React.createElement("p", {
     className: "text-xs text-slate-500 mt-0.5"
-  }, "문항 ", items.length, "개 · 계열사 ", companies.length, "개 · 총 ", totalCells, "개 판정 항목")), /*#__PURE__*/React.createElement("span", {
-    className: "text-xs text-slate-400 flex items-center gap-1"
+  }, "문항 ", items.length, "개 · 계열사 ", companies.length, "개 · 총 ", totalCells, "개 판정 항목")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `text-xs flex items-center gap-1 ${saveStatus === 'error' ? 'text-red-500' : 'text-slate-400'}`
   }, saveStatus === 'saving' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(RefreshCw, {
     size: 12,
     className: "animate-spin"
   }), " 저장 중"), saveStatus === 'saved' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Save, {
     size: 12
-  }), " 저장됨"))), /*#__PURE__*/React.createElement("div", {
+  }), " 저장됨"), saveStatus === 'error' && /*#__PURE__*/React.createElement(React.Fragment, null, "저장 실패 \u2014 저장 버튼으로 재시도"), saveStatus === 'idle' && dirtyCount > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, "저장 안 됨 ", dirtyCount, "건")), /*#__PURE__*/React.createElement("button", {
+    onClick: saveAllNow,
+    disabled: saveStatus === 'saving',
+    className: `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${dirtyCount > 0 ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'} disabled:opacity-50`
+  }, /*#__PURE__*/React.createElement(Save, {
+    size: 13
+  }), dirtyCount > 0 ? `저장 (${dirtyCount})` : '저장'))), importOpen && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4",
+    onClick: () => setImportOpen(false)
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl shadow-xl w-full max-w-2xl p-5 max-h-[90vh] overflow-y-auto",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-semibold text-slate-900 mb-1"
+  }, "엑셀 붙여넣기로 복원"), /*#__PURE__*/React.createElement("ol", {
+    className: "text-xs text-slate-500 mb-3 list-decimal list-inside space-y-0.5"
+  }, /*#__PURE__*/React.createElement("li", null, "내보내기했던 엑셀 파일에서 ", /*#__PURE__*/React.createElement("b", null, "'응답 데이터' 시트"), "를 엽니다."), /*#__PURE__*/React.createElement("li", null, "헤더(번호, 카테고리...)를 포함해 전체 범위를 선택하고 복사(Ctrl+C)합니다."), /*#__PURE__*/React.createElement("li", null, "아래 칸에 붙여넣기(Ctrl+V)한 뒤 '복원하기'를 누릅니다.")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-amber-600 mb-2"
+  }, "붙여넣은 내용이 현재 데이터를 덮어씁니다 (엑셀에서 미응답이었던 항목은 건드리지 않음)."), /*#__PURE__*/React.createElement("textarea", {
+    className: "w-full h-56 border border-slate-300 rounded-lg p-3 text-xs font-mono resize-y focus:outline-none focus:ring-2 focus:ring-indigo-400",
+    placeholder: "여기에 붙여넣기 (Ctrl+V)",
+    value: importText,
+    onChange: e => setImportText(e.target.value)
+  }), importMsg && /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-indigo-600 mt-2"
+  }, importMsg), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-end gap-2 mt-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setImportOpen(false),
+    className: btnSecondary
+  }, "취소"), /*#__PURE__*/React.createElement("button", {
+    onClick: applyImport,
+    disabled: !importText.trim() || saveStatus === 'saving',
+    className: btnBase + ' bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50'
+  }, /*#__PURE__*/React.createElement(ClipboardPaste, {
+    size: 14
+  }), " 복원하기")))), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-1 mb-5 border-b border-slate-200"
   }, [{
     key: 'check',
@@ -3047,13 +3368,27 @@ function HRDiagnosisTool() {
   }, items.length === 0 ? /*#__PURE__*/React.createElement(Card, {
     className: "p-8 text-center text-sm text-slate-400"
   }, "문항이 없어 결과를 표시할 수 없습니다.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-end"
+    className: "flex items-center justify-end gap-2 flex-wrap"
   }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setImportText('');
+      setImportMsg('');
+      setImportOpen(true);
+    },
+    className: btnSecondary
+  }, /*#__PURE__*/React.createElement(ClipboardPaste, {
+    size: 14
+  }), " 엑셀 붙여넣기로 복원"), /*#__PURE__*/React.createElement("button", {
     onClick: exportExcel,
     className: btnSecondary
   }, /*#__PURE__*/React.createElement(Download, {
     size: 14
-  }), " 엑셀로 내보내기")), /*#__PURE__*/React.createElement(Card, {
+  }), " 엑셀로 내보내기"), /*#__PURE__*/React.createElement("button", {
+    onClick: resetAll,
+    className: btnBase + ' bg-white border border-red-200 text-red-600 hover:bg-red-50'
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    size: 14
+  }), " 데이터 초기화")), /*#__PURE__*/React.createElement(Card, {
     className: "p-5"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "text-sm font-semibold text-slate-900 mb-1"
